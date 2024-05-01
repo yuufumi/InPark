@@ -2,4 +2,5 @@
 <resources>
 
     <style name="Theme.InPark" parent="android:Theme.Material.Light.NoActionBar" />
+
 </resources>
