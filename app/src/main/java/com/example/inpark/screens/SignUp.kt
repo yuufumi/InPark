@@ -15,7 +15,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.PointerIcon.Companion.Text
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
@@ -31,7 +30,7 @@ import com.example.inpark.outfitFamily
 fun Signup(navController: NavController){
     Column(modifier = Modifier
         .fillMaxSize()
-        .padding(start = 30.dp, end = 30.dp, top = 40.dp, bottom = 40.dpr)
+        .padding(start = 30.dp, end = 30.dp, top = 40.dp, bottom = 40.dp)
         .verticalScroll(
             rememberScrollState()
         ),
