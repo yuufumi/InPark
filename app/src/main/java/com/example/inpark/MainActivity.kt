@@ -20,7 +20,9 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.navigation.compose.rememberNavController
 import com.example.inpark.R.font.outfit_black
+import com.example.inpark.app.InParkApp
 import com.example.inpark.ui.theme.InParkTheme
 
 val outfitFamily = FontFamily(
@@ -36,20 +38,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         installSplashScreen()
         setContent {
-            InParkTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    Column(modifier = Modifier.fillMaxSize(),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally) {
-                        Greeting("Android")
-                        Image(painter = painterResource(id = R.drawable.inpark),contentDescription = "logo")
 
-                    }
-                }
-            }
+
+            InParkApp()
         }
     }
 }
