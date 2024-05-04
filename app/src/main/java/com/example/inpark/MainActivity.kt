@@ -1,18 +1,26 @@
 package com.example.inpark
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,14 +31,32 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.inpark.R.font.outfit_black
 import com.example.inpark.app.InParkApp
+import com.example.inpark.components.InparkBottomNavBar
+import com.example.inpark.screens.Bookings
+import com.example.inpark.screens.Home
+import com.example.inpark.screens.Maps
+import com.example.inpark.screens.Profile
+import com.example.inpark.screens.SignIn
+import com.example.inpark.screens.Signup
 import com.example.inpark.ui.theme.InParkTheme
+import com.example.inpark.utils.AppPermissions
+import com.example.inpark.utils.GoogleAuthUIClient
+import com.example.inpark.viewModels.signInViewModel
+import com.google.android.gms.auth.api.identity.Identity
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.auth
+import kotlinx.coroutines.launch
 
 val outfitFamily = FontFamily(
     Font(R.font.outfit_light, FontWeight.Light),
@@ -39,96 +65,37 @@ val outfitFamily = FontFamily(
     Font(R.font.outfit_bold, FontWeight.Bold)
 )
 
-class MainActivity : ComponentActivity() {
+class MainActivity : ComponentActivity(){
 
-    /*private lateinit var auth: FirebaseAuth
-
-    private fun reload() {
-    }
-
-    public override fun onStart() {
-        super.onStart()
-        // Check if user is signed in (non-null) and update UI accordingly.
-        val currentUser = auth.currentUser
-        if (currentUser != null) {
-            reload()
-        }
-    }
-    companion object {
-        private const val TAG = "EmailPassword"
-    }
-
-    private fun updateUI(user: FirebaseUser?) {
-    }*/
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Initialize Firebase Auth
-        /*auth = Firebase.auth
-        var email = "ybenali884@gmail.com"
-        var password = "youcef"
-        auth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
-                    Log.d(TAG, "createUserWithEmail:success")
-                    val user = auth.currentUser
-                    updateUI(user)
-                } else {
-                    // If sign in fails, display a message to the user.
-                    Log.w(TAG, "createUserWithEmail:failure", task.exception)
-                    Toast.makeText(
-                        baseContext,
-                        "Authentication failed.",
-                        Toast.LENGTH_SHORT,
-                    ).show()
-                    updateUI(null)
-                }
-            }
-        auth.signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
-                    Log.d(TAG, "signInWithEmail:success")
-                    val user = auth.currentUser
-                    updateUI(user)
-                } else {
-                    // If sign in fails, display a message to the user.
-                    Log.w(TAG, "signInWithEmail:failure", task.exception)
-                    Toast.makeText(
-                        baseContext,
-                        "Authentication failed.",
-                        Toast.LENGTH_SHORT,
-                    ).show()
-                    updateUI(null)
-                }
-            }
-        val user = Firebase.auth.currentUser
-        user?.let {
-            // Name, email address, and profile photo Url
-            val name = it.displayName
-            val email = it.email
-            val photoUrl = it.photoUrl
+        val googleAuthUIClient by lazy {
+            GoogleAuthUIClient(
+                context = applicationContext,
+                oneTapClient = Identity.getSignInClient(applicationContext)
 
-            // Check if user's email is verified
-            val emailVerified = it.isEmailVerified
+            )
+        }
 
-            // The user's ID, unique to the Firebase project. Do NOT use this value to
-            // authenticate with your backend server, if you have one. Use
-            // FirebaseUser.getIdToken() instead.
-            val uid = it.uid
-        }*/
         super.onCreate(savedInstanceState)
+        val permission = AppPermissions()
+        if (permission.isLocationOk(this)) {
+            println("Allowed")
+        } else {
+            permission.requestLocationPermission(this)
+            println("denied")
+        }
         installSplashScreen()
         setContent {
             Surface(
                 modifier = Modifier.fillMaxSize(),
                 color = Color(0xff003C3C),
             ) {
+                InParkApp()
+            }
 
-            InParkApp()
+        }
             }
         }
-    }
-}
 
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {

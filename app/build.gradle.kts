@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    id("com.google.gms.google-services")
+
 }
 
 android {
@@ -51,9 +53,11 @@ android {
 
 dependencies {
     val nav_version = "2.6.0"
+    implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
     // Kotlin
     implementation("androidx.navigation:navigation-fragment-ktx:$nav_version")
     implementation("androidx.navigation:navigation-ui-ktx:$nav_version")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.3.1")
     implementation ("androidx.navigation:navigation-compose:$nav_version")
 
     // Import the BoM for the Firebase platform

@@ -1,6 +1,7 @@
 package com.example.inpark.components
 
 import android.graphics.drawable.Icon
+import android.service.autofill.OnClickAction
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -27,8 +28,8 @@ import com.example.inpark.R
 import com.example.inpark.outfitFamily
 
 @Composable
-fun GoogleButton() {
-    Button(onClick = {},modifier = Modifier
+fun GoogleButton(onClick: () -> Unit) {
+    Button(onClick = onClick,modifier = Modifier
         .fillMaxWidth()
         .height(40.dp),
         shape = RoundedCornerShape(8.dp),

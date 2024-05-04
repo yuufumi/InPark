@@ -1,23 +1,27 @@
 package com.example.inpark.screens
 
+import android.content.Context
+import android.content.Intent
+import android.content.IntentSender
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -25,11 +29,23 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.inpark.R
 import com.example.inpark.components.CustomButton
 import com.example.inpark.components.GoogleButton
 import com.example.inpark.components.Title
 import com.example.inpark.components.UserInfoTextField
+import com.example.inpark.models.SignInResult
+import com.example.inpark.models.UserData
 import com.example.inpark.outfitFamily
+import com.example.inpark.utils.SignInState
+import com.google.android.gms.auth.api.identity.BeginSignInRequest
+import com.google.android.gms.auth.api.identity.BeginSignInRequest.GoogleIdTokenRequestOptions
+import com.google.android.gms.auth.api.identity.SignInClient
+import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.tasks.await
+import java.util.concurrent.CancellationException
 
 @Composable
 fun SignIn (navController: NavController) {
@@ -80,7 +96,7 @@ fun SignIn (navController: NavController) {
 
 
             }
-            GoogleButton()
+            GoogleButton(onClick = {})
             Row {
                 Text(
                     text = "You don’t have an account?",

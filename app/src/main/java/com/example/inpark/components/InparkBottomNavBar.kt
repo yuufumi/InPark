@@ -4,6 +4,7 @@ import android.graphics.drawable.Icon
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -75,13 +76,13 @@ fun InparkBottomNavBar(navController: NavController,color: Color){
     var selectedItemIndex by rememberSaveable {
         mutableStateOf(0)
     }
-    NavigationBar(containerColor = color, contentColor = color) {
+    NavigationBar(containerColor = color, contentColor = color, modifier = Modifier.height(60.dp)) {
         items.forEachIndexed{index, item ->
             NavigationBarItem(selected = selectedItemIndex == index,
             onClick = {
                 selectedItemIndex = index
                 navController.navigate(item.title)
-            }, modifier = Modifier.background(color = color),
+            }, modifier = Modifier.background(color = color).height(60.dp),
             icon = {
                     if(selectedItemIndex == index) {
                         Icon(painter = painterResource(id = item.selectedIcon), modifier = Modifier.size(26.dp), tint = Color(0xff002020), contentDescription = item.title)
