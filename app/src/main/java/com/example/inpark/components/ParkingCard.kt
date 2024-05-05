@@ -2,6 +2,7 @@ package com.example.inpark.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,12 +31,14 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.inpark.R
 import com.example.inpark.models.Parking
 import com.example.inpark.outfitFamily
 
 @Composable
-fun ParkingCard(parking: Parking) {
+fun ParkingCard(parking: Parking,navController: NavController) {
+
     Card (
     colors = CardDefaults.cardColors(
         containerColor = Color(0xffF5FFFA)
@@ -46,7 +49,7 @@ fun ParkingCard(parking: Parking) {
     ){
     Row(modifier = Modifier
         .fillMaxSize()
-        .padding(15.dp),
+        .padding(15.dp).clickable { navController.navigate("parkings/${parking.id}") },
         horizontalArrangement = Arrangement.SpaceBetween) {
         Column {
             Text(text = parking.name,modifier = Modifier.padding(start = 3.dp), style = TextStyle(fontFamily = outfitFamily, fontWeight = FontWeight.Bold, fontSize = 18.sp, color = Color(0xff000000)))

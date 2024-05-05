@@ -1,6 +1,7 @@
 package com.example.inpark
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -14,6 +15,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -24,7 +26,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.Role.Companion.Button
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -44,6 +48,7 @@ import com.example.inpark.components.InparkBottomNavBar
 import com.example.inpark.screens.Bookings
 import com.example.inpark.screens.Home
 import com.example.inpark.screens.Maps
+import com.example.inpark.screens.MapsActivity
 import com.example.inpark.screens.Profile
 import com.example.inpark.screens.SignIn
 import com.example.inpark.screens.Signup
@@ -68,13 +73,7 @@ val outfitFamily = FontFamily(
 class MainActivity : ComponentActivity(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val googleAuthUIClient by lazy {
-            GoogleAuthUIClient(
-                context = applicationContext,
-                oneTapClient = Identity.getSignInClient(applicationContext)
 
-            )
-        }
 
         super.onCreate(savedInstanceState)
         val permission = AppPermissions()
@@ -90,6 +89,8 @@ class MainActivity : ComponentActivity(){
                 modifier = Modifier.fillMaxSize(),
                 color = Color(0xff003C3C),
             ) {
+                //Greeting()
+                //MapsActivity()
                 InParkApp()
             }
 
@@ -98,20 +99,19 @@ class MainActivity : ComponentActivity(){
         }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-
-    Text(
-        text = "Hello $name!",
-        fontFamily = outfitFamily,
-        fontWeight = FontWeight.Bold,
-        modifier = modifier
-    )
+fun Greeting() {
+    val context = LocalContext.current
+    Button(onClick = {
+        context.startActivity(Intent(context,MapsActivity::class.java))
+    }){
+        Text(text = "goto maps")
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     InParkTheme {
-        Greeting("Android")
+        Greeting()
     }
 }

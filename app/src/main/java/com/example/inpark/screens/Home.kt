@@ -43,8 +43,8 @@ import java.nio.file.WatchEvent
 @Composable
 fun Home(navController: NavController) {
     val cardData = listOf(
-        Parking(1, "Lot A", "Large parking lot near main entrance", 3.00, "Mall", true),
-        Parking(2, "Garage B", "Multi-level parking garage", 4.00, "Downtown", false),
+        Parking(1, "Lot A", "Large parking lot near main entrance Large parking lot near main entrance Large parking lot near main entrance Large parking lot near main entrance Large parking lot near main entrance Large parking lot near main entrance Large parking lot near main entrance", 3.00, "Mall", true),
+        Parking(2, "Garage B", "Multi-level parking garage Multi-level parking garage Multi-level parking garage Multi-level parking garage Multi-level parking garage Multi-level parking garage", 4.00, "Downtown", false),
         Parking(3, "Street Parking", "Metered street parking on Elm Street", 2.00, "City Center", true),
         Parking(4, "Valet Parking", "Convenient valet service at the restaurant", 10.00, "Restaurant District", true),
         Parking(5, "Employee Lot", "Reserved parking for employees only", 0.00, "Company HQ", false),
@@ -80,7 +80,7 @@ fun Home(navController: NavController) {
         Spacer(modifier = Modifier.height(30.dp))
         LazyRow(horizontalArrangement = Arrangement.spacedBy(20.dp)) {
             items(cardData.take(6)) { card ->
-                ParkingCard(card)
+                ParkingCard(card,navController)
             }
         }
 
