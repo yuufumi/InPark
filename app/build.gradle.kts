@@ -59,7 +59,8 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     val nav_version = "2.6.0"
     implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
-    // Kotlin
+    implementation("com.lightspark:compose-qr-code:1.0.1")
+// Kotlin
     implementation("androidx.navigation:navigation-fragment-ktx:$nav_version")
     implementation("androidx.navigation:navigation-ui-ktx:$nav_version")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.3.1")

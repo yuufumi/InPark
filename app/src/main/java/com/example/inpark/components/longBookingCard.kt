@@ -51,6 +51,8 @@ import androidx.navigation.NavController
 import com.example.inpark.R
 import com.example.inpark.models.Parking
 import com.example.inpark.outfitFamily
+import com.lightspark.composeqr.QrCodeColors
+import com.lightspark.composeqr.QrCodeView
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -286,7 +288,11 @@ fun longBookingCard(parking: Parking,navController: NavController) {
                         )
                 }
                 Spacer(modifier = Modifier.height(15.dp))
-                Image(painter = painterResource(id = R.drawable.qrcode), modifier = Modifier.size(130.dp), contentDescription = "qrcode")
+                QrCodeView(
+                    data = "localhost:8000/${parking.id}",
+                    modifier = Modifier.size(130.dp),
+                    colors = QrCodeColors(background = Color(0xffffffff),foreground = Color(0xff003C3C))
+                )
                 Spacer(modifier = Modifier.height(15.dp))
                 Button(modifier = Modifier.fillMaxWidth(0.6f),shape = RoundedCornerShape(10.dp),onClick = {navController.navigate("parkings/${parking.id}")}, colors = ButtonDefaults.buttonColors(containerColor = Color(0xff003C3C))) {
                     Text(text="Details", style = TextStyle(fontFamily = outfitFamily, fontWeight = FontWeight.SemiBold, fontSize = 16.sp, color = Color(0xfffffff0)))
