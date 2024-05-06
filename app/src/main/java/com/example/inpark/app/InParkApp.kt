@@ -78,7 +78,7 @@ fun InParkApp(){
                     .background(Color(0xff002020))
 
             ){
-                NavHost(navController = navController, startDestination = "home") {
+                NavHost(navController = navController, startDestination = "bookings") {
                     composable("signup") {Signup(navController) }
                     composable("signin") {SignIn(navController)}
                     composable("parkings/{parkingId}"){ backStackEntry ->
