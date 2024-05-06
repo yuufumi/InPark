@@ -51,7 +51,7 @@ import com.google.android.gms.auth.api.identity.Identity
 
 
 @Composable
-fun InParkApp(){
+fun InParkApp(context: Context){
     val navController = rememberNavController()
     val cardData = listOf(
         Parking(1, "Lot A", "Large parking lot near main entrance Large parking lot near main entrance Large parking lot near main entrance Large parking lot near main entrance Large parking lot near main entrance Large parking lot near main entranceLarge parking lot near main entrance Large parking lot near main entrance", 3.00, "Mall", true),
@@ -85,7 +85,7 @@ fun InParkApp(){
                         val parkingId = backStackEntry.arguments?.getString("parkingId")
                         parkingDetails(cardData,parkingId!!,navController)}
                     composable("home") {Home(navController)}
-                    composable("maps"){Maps(navController)}
+                    composable("maps"){Maps(context,navController)}
                     composable("bookings"){Bookings(navController)}
                     composable("profile"){Profile(navController) }
                 }

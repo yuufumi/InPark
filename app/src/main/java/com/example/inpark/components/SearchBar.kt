@@ -57,17 +57,3 @@ fun SearchBar() {
     textStyle = TextStyle(fontFamily = outfitFamily, fontSize = 18.sp))
 }
 
-/*
-value = text, onValueChange = { text = "pokopdk" }, modifier = Modifier
-            .fillMaxWidth()
-            .height(46.dp)
-            .padding(horizontal = 18.dp), leadingIcon = Icon(
-            painter = painterResource(id = R.drawable.search),
-            contentDescription = "search"
-        ), shape = RoundedCornerShape(30.dp), colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedTextColor = Color(0xffffffff),
-            cursorColor = Color(0xffffffff),
-            containerColor = Color(0xff143C3C),
-            focusedBorderColor = Color(0xffA0F000)
-        ), textStyle = TextStyle(fontFamily = outfitFamily, fontSize = 18.sp)
-* */

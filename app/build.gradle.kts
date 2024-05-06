@@ -57,6 +57,9 @@ dependencies {
     implementation(libs.play.services.maps)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.constraintlayout)
+    implementation("com.google.maps.android:maps-compose:4.3.3")
+    implementation("com.google.android.gms:play-services-location:21.1.0")
+    implementation("com.google.accompanist:accompanist-permissions:0.35.0-alpha")
     val nav_version = "2.6.0"
     implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
     implementation("com.lightspark:compose-qr-code:1.0.1")

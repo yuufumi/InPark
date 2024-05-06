@@ -76,13 +76,7 @@ class MainActivity : ComponentActivity(){
 
 
         super.onCreate(savedInstanceState)
-        val permission = AppPermissions()
-        if (permission.isLocationOk(this)) {
-            println("Allowed")
-        } else {
-            permission.requestLocationPermission(this)
-            println("denied")
-        }
+
         installSplashScreen()
         setContent {
             Surface(
@@ -91,7 +85,7 @@ class MainActivity : ComponentActivity(){
             ) {
                 //Greeting()
                 //MapsActivity()
-                InParkApp()
+                InParkApp(this)
             }
 
         }
