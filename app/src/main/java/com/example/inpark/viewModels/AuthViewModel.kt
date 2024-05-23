@@ -21,8 +21,8 @@ class AuthViewModel (private val authRepository: AuthRepository) : ViewModel() {
     private val _signupResponse = MutableLiveData<Response<User>>()
     val signupResponse : LiveData<Response<User>> get() = _signupResponse
 
-    private val _loginResponse = MutableLiveData<Response<User>>()
-    val loginResponse : LiveData<Response<User>> get() = _loginResponse
+    private val _loginResponse = MutableLiveData<Response<User>?>()
+    val loginResponse : LiveData<Response<User>?> get() = _loginResponse
 
     private val _allUsersResponse = MutableLiveData<Response<List<User>>>()
 
@@ -104,6 +104,10 @@ class AuthViewModel (private val authRepository: AuthRepository) : ViewModel() {
                 loading.value = false
             }
         }
+    }
+
+    fun logoutUser(){
+        _loginResponse.value = null
     }
     class Factory(private val authRepository: AuthRepository) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")

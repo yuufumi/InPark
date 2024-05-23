@@ -23,6 +23,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -66,12 +69,23 @@ fun InParkApp(){
     val navController = rememberNavController()
     val context = LocalContext.current
     val authApi = AuthApi.createEndpoint()
+    var startDest: String by remember {
+        mutableStateOf("")
+    }
+
+    val sharedPreferences = context.getSharedPreferences("my_prefs", Context.MODE_PRIVATE)
+    val userId = sharedPreferences.getString("id" , null)
+    if (userId != null) {
+        startDest = "home"
+    }else {
+        startDest = "signin"
+    }
     val parkingApi = ParkingApi.createEndpoint()
     val authRepository by lazy { AuthRepository(authApi) }
     val parkingRepository by lazy { ParkingRepository(parkingApi) }
     val authViewModel = AuthViewModel.Factory(authRepository).create(AuthViewModel::class.java)
     val parkingViewModel = ParkingViewModel.Factory(parkingRepository).create(ParkingViewModel::class.java)
-    NavHost(navController = navController, startDestination = "home") {
+    NavHost(navController = navController, startDestination = startDest) {
         composable("signup") { Signup(navController,authViewModel = authViewModel) }
         composable("signin") { SignIn(navController, authViewModel = authViewModel) }
         composable("parkings/{parkingId}"){ backStackEntry -> val parkingId = backStackEntry.arguments?.getString("parkingId")
@@ -80,7 +94,7 @@ fun InParkApp(){
         composable("home") { Home(navController,parkingViewModel = parkingViewModel) }
         composable("maps"){ Maps(navController) }
         composable("bookings"){ Bookings(navController) }
-        composable("profile"){ Profile(navController) }
+        composable("profile"){ Profile(sharedPreferences,navController,authViewModel) }
     }
 }
 

@@ -19,4 +19,7 @@ class AuthRepository(private val authApi: AuthApi) {
     suspend fun getAllUsers():Response<List<User>>{
         return authApi.getAllUsers()
     }
+
+    suspend fun logoutUser(){
+    }
 }
