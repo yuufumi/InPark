@@ -1,5 +1,6 @@
 package com.example.inpark.components
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -37,8 +38,10 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.inpark.R
-import com.example.inpark.models.Parking
+import com.example.inpark.data.model.Parking
 import com.example.inpark.outfitFamily
+import com.example.inpark.utils.checkHourStatus
+import com.example.inpark.utils.extractHour
 
 @Composable
 fun MainParkingDetails(parking:Parking){
@@ -66,8 +69,8 @@ fun MainParkingDetails(parking:Parking){
         Row(modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 6.dp),verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween){
-            Text(text = parking.name, style = TextStyle(fontFamily = outfitFamily, fontWeight = FontWeight.Bold, fontSize = 22.sp, color = Color(0xfffffff0)))
-            if(parking.isOpen){
+            Text(text = parking.nom, style = TextStyle(fontFamily = outfitFamily, fontWeight = FontWeight.Bold, fontSize = 22.sp, color = Color(0xfffffff0)))
+            if(checkHourStatus(parking.openning_hour, parking.closing_hour)){
                 Button(onClick = {},enabled = false, shape = RoundedCornerShape(30),colors = ButtonDefaults.buttonColors(disabledContainerColor = Color(0xffD1E7DD), disabledContentColor = Color(0xff0A3622))) {
                     Text(text = "Opened",style = TextStyle(fontFamily = outfitFamily, fontSize = 18.sp))
                 }
@@ -105,7 +108,7 @@ fun MainParkingDetails(parking:Parking){
                 .height(24.dp)
                 .width(2.dp),color = Color(0x5ffffff0))
             Spacer(modifier = Modifier.width(10.dp))
-            Pricing(price = 100.0)
+            Pricing(price = parking.price_per_hour.toString())
         }
         Spacer(modifier = Modifier.height(15.dp))
         Divider(
@@ -117,9 +120,9 @@ fun MainParkingDetails(parking:Parking){
         Spacer(modifier = Modifier.height(15.dp))
         Row {
             Text(text = "Open from ",style = TextStyle(fontFamily = outfitFamily, fontWeight = FontWeight.Normal, fontSize = 22.sp, color = Color(0x9ffffff0)))
-            Text(text = "8 am",style = TextStyle(fontFamily = outfitFamily, fontWeight = FontWeight.Normal, fontSize = 22.sp, color = Color(0xffA0F000)))
+            Text(text = "${extractHour(parking.openning_hour)}h",style = TextStyle(fontFamily = outfitFamily, fontWeight = FontWeight.Normal, fontSize = 22.sp, color = Color(0xffA0F000)))
             Text(text = " to ", style = TextStyle(fontFamily = outfitFamily, fontWeight = FontWeight.Normal, fontSize = 22.sp, color = Color(0x9ffffff0)))
-            Text(text = "11 pm",style = TextStyle(fontFamily = outfitFamily, fontWeight = FontWeight.Normal, fontSize = 22.sp, color = Color(0xffA0F000)))
+            Text(text = "${extractHour(parking.closing_hour)}h",style = TextStyle(fontFamily = outfitFamily, fontWeight = FontWeight.Normal, fontSize = 22.sp, color = Color(0xffA0F000)))
         }
         Spacer(modifier = Modifier.height(15.dp))
         Row(modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(10.dp)), horizontalArrangement = Arrangement.SpaceBetween){
@@ -158,11 +161,11 @@ fun freeSpaces(free: Int){
 }
 
 @Composable
-fun Pricing(price:Double){
+fun Pricing(price:String){
     Row(verticalAlignment = Alignment.CenterVertically){
         Icon(painter = painterResource(id = R.drawable.money), modifier = Modifier.size(20.dp), tint = Color(0x5ffffff0),contentDescription = "space")
         Spacer(modifier = Modifier.width(5.dp))
-        Text(text = "${price.toString()}DA/hr", style = TextStyle(fontFamily = outfitFamily, fontWeight = FontWeight.Medium, fontSize = 12.sp, color = Color(0x5ffffff0)))
+        Text(text = "${price}DA/hr", style = TextStyle(fontFamily = outfitFamily, fontWeight = FontWeight.Medium, fontSize = 12.sp, color = Color(0x5ffffff0)))
     }
 
 }

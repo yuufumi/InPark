@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -29,6 +30,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.inpark.R
 
 data class BottomNavigationItem(
@@ -73,18 +76,18 @@ fun InparkBottomNavBar(navController: NavController,color: Color){
             badgeCount = null,
         ),
     )
-    var selectedItemIndex by rememberSaveable {
-        mutableStateOf(0)
-    }
+    val navStackBackEntry by navController.currentBackStackEntryAsState()
+    var selectedItemRoute = navStackBackEntry?.destination
     NavigationBar(containerColor = color, contentColor = color, modifier = Modifier.height(60.dp)) {
         items.forEachIndexed{index, item ->
-            NavigationBarItem(selected = selectedItemIndex == index,
+            NavigationBarItem(selected = selectedItemRoute?.hierarchy?.any { it.route == item.title } == true,
             onClick = {
-                selectedItemIndex = index
                 navController.navigate(item.title)
-            }, modifier = Modifier.background(color = color).height(60.dp),
+            }, modifier = Modifier
+                    .background(color = color)
+                    .height(60.dp),
             icon = {
-                    if(selectedItemIndex == index) {
+                    if(selectedItemRoute?.hierarchy?.any { it.route == item.title } == true) {
                         Icon(painter = painterResource(id = item.selectedIcon), modifier = Modifier.size(26.dp), tint = Color(0xff002020), contentDescription = item.title)
                     }else{
                         Icon(painter = painterResource(id = item.unselectedIcon), modifier = Modifier.size(26.dp), tint = Color(0xfffffff0), contentDescription = item.title)

@@ -1,6 +1,6 @@
 package com.example.inpark.components
 
-import androidx.compose.foundation.background
+import android.content.SharedPreferences
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,8 +17,8 @@ import androidx.compose.ui.unit.sp
 import com.example.inpark.outfitFamily
 
 @Composable
-fun CustomButton(label:String,color: String=""){
-    Button(onClick = {},modifier = Modifier.fillMaxWidth().height(40.dp),
+fun CustomButton(label:String, color: String="", onbtnClick: () -> Unit = {}){
+    Button(onClick = onbtnClick,modifier = Modifier.fillMaxWidth().height(40.dp),
         shape = RoundedCornerShape(8.dp),
         colors = ButtonDefaults.buttonColors(containerColor = Color(0xffa0f000)) ) {
         Text(

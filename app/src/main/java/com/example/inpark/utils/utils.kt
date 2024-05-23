@@ -12,8 +12,36 @@ import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.LatLng
+import java.time.LocalTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 
+fun extractHour(timeStamp: String): String{
+    val formatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+    val zonedDateTime = ZonedDateTime.parse(timeStamp,formatter)
+    return zonedDateTime.hour.toString()
+}
+
+fun checkHourStatus(openingHour: String, closingHour: String): Boolean{
+    val formatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+
+    val openingZonedDateTime = ZonedDateTime.parse(openingHour, formatter).withZoneSameInstant(ZoneId.systemDefault())
+    val closingZonedDateTime = ZonedDateTime.parse(closingHour, formatter).withZoneSameInstant(ZoneId.systemDefault())
+
+    val openingLocalTime = openingZonedDateTime.toLocalTime()
+    val closingLocalTime = closingZonedDateTime.toLocalTime()
+
+    val currentLocalTime = LocalTime.now(ZoneId.systemDefault())
+
+    return if (openingLocalTime.isBefore(closingLocalTime)) {
+        currentLocalTime.isAfter(openingLocalTime) && currentLocalTime.isBefore(closingLocalTime)
+    } else {
+        // Handle overnight business hours (e.g., 10 PM to 6 AM)
+        currentLocalTime.isAfter(openingLocalTime) || currentLocalTime.isBefore(closingLocalTime)
+    }
+}
 fun checkForPermission(context: Context): Boolean {
     return !(ActivityCompat.checkSelfPermission(context,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context,Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
 }

@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,15 +38,15 @@ import com.example.inpark.outfitFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UserInfoTextField(label:String,placeholder:String,type:String,size:Float=1f){
-    var text by remember { mutableStateOf("") }
+fun UserInfoTextField(label:String,placeholder:String,type:String,size:Float=1f, state:MutableState<String>): String{
+
     var passwordVisible by remember { mutableStateOf(false) }
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
         Text(text=label, style = TextStyle(fontFamily = outfitFamily, color = Color.White, fontWeight = FontWeight.Normal, fontSize = 18.sp))
         if(type=="password"){
             OutlinedTextField(
-                value = text,
-                onValueChange = { text = it },
+                value = state.value,
+                onValueChange = { state.value = it },
                 modifier = Modifier
                     .fillMaxWidth(size)
                     .height(50.dp),
@@ -68,10 +69,10 @@ fun UserInfoTextField(label:String,placeholder:String,type:String,size:Float=1f)
                     focusedBorderColor = Color(0xffA0F000)
                 ),
 
-                textStyle = TextStyle(fontFamily = outfitFamily, fontSize = 18.sp)
+                textStyle = TextStyle(fontFamily = outfitFamily, fontSize = 18.sp, color = Color(0xfffffff0))
             )
         }else{
-            OutlinedTextField(value = text,onValueChange = { text = it },modifier = Modifier
+            OutlinedTextField(value = state.value,onValueChange = { state.value = it },modifier = Modifier
                 .fillMaxWidth(size)
                 .height(50.dp),
                 placeholder = {Text(text = placeholder, style = TextStyle(fontSize = 12.sp, fontFamily = outfitFamily, color = Color(0x55fffff0)))},
@@ -83,12 +84,13 @@ fun UserInfoTextField(label:String,placeholder:String,type:String,size:Float=1f)
                     focusedBorderColor = Color(0xffA0F000)
                 ),
 
-                textStyle = TextStyle(fontFamily = outfitFamily, fontSize = 18.sp)
+                textStyle = TextStyle(fontFamily = outfitFamily, fontSize = 18.sp, color = Color(0xfffffff0))
             )
 
         }
 
     }
+    return state.value
 }
 
 fun handleChange(){}

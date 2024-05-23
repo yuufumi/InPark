@@ -31,7 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.inpark.R
-import com.example.inpark.models.Parking
+import com.example.inpark.data.model.Parking
 import com.example.inpark.outfitFamily
 
 
@@ -65,7 +65,7 @@ Card (
                 painter = painterResource(id = R.drawable.parking_example), // Replace with your image resource
                 contentDescription = "parking Image" // Optional content description for accessibility
             )
-            if(parking.isOpen){
+            if(true){
                 Button(onClick = {}, contentPadding = PaddingValues(),    modifier = Modifier.padding(horizontal = 5.dp, vertical = 5.dp).fillMaxWidth(0.4f).height(24.dp).align(Alignment.TopEnd).defaultMinSize(minWidth = 1.dp, minHeight = 1.dp),enabled = false, colors = ButtonDefaults.buttonColors(disabledContainerColor = Color(0xffD1E7DD), disabledContentColor = Color(0xff0A3622))) {
                     Text(text = "Opened",style = TextStyle(fontFamily = outfitFamily, fontSize = 10.sp))
                 }
@@ -77,10 +77,10 @@ Card (
 
         }
     Spacer(modifier = Modifier.height(6.dp))
-    Text(text = parking.name,modifier = Modifier.padding(start = 3.dp), style = TextStyle(fontFamily = outfitFamily, fontWeight = FontWeight.Bold, fontSize = 14.sp, color = Color(0xff000000)))
+    Text(text = parking.nom,modifier = Modifier.padding(start = 3.dp), style = TextStyle(fontFamily = outfitFamily, fontWeight = FontWeight.Bold, fontSize = 14.sp, color = Color(0xff000000)))
     Text(text = parking.location, modifier = Modifier.padding(start = 3.dp),style = TextStyle(fontFamily = outfitFamily, fontWeight = FontWeight.SemiBold, fontSize = 12.sp, color = Color(0x5f000000)))
     Spacer(modifier = Modifier.height(6.dp))
-    Text(text = "${parking.pricePerHour}Da/hr", modifier = Modifier.padding(start = 3.dp),style = TextStyle(fontFamily = outfitFamily, fontWeight = FontWeight.SemiBold, fontSize = 12.sp, color = Color(0xff000000)))
+    Text(text = "${parking.price_per_hour}Da/hr", modifier = Modifier.padding(start = 3.dp),style = TextStyle(fontFamily = outfitFamily, fontWeight = FontWeight.SemiBold, fontSize = 12.sp, color = Color(0xff000000)))
     }
 }
 }
