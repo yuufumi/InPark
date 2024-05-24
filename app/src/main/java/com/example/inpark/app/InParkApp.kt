@@ -76,7 +76,7 @@ fun InParkApp(){
     val sharedPreferences = context.getSharedPreferences("my_prefs", Context.MODE_PRIVATE)
     val userId = sharedPreferences.getString("id" , null)
     if (userId != null) {
-        startDest = "home"
+        startDest = "maps"
     }else {
         startDest = "signin"
     }
@@ -92,8 +92,8 @@ fun InParkApp(){
                         parkingDetails(parkingViewModel,parkingId!!,navController)
                     }
         composable("home") { Home(navController,parkingViewModel = parkingViewModel) }
-        composable("maps"){ Maps(navController) }
-        composable("bookings"){ Bookings(navController) }
+        composable("maps"){ Maps(navController, parkingViewModel) }
+        composable("bookings"){ Bookings(navController,parkingViewModel = parkingViewModel ) }
         composable("profile"){ Profile(sharedPreferences,navController,authViewModel) }
     }
 }

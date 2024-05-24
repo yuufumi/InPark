@@ -18,6 +18,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,22 +37,16 @@ import com.example.inpark.components.TopBar
 import com.example.inpark.components.longBookingCard
 import com.example.inpark.models.Parking
 import com.example.inpark.outfitFamily
+import com.example.inpark.viewModels.ParkingViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun Bookings(navController: NavController) {
-    val cardData = listOf(
-        Parking(1, "Lot A", "Large parking lot near main entrance Large parking lot near main entrance Large parking lot near main entrance Large parking lot near main entrance Large parking lot near main entrance Large parking lot near main entrance Large parking lot near main entrance", 3.00, "Mall", true),
-        Parking(2, "Garage B", "Multi-level parking garage Multi-level parking garage Multi-level parking garage Multi-level parking garage Multi-level parking garage Multi-level parking garage", 4.00, "Downtown", false),
-        Parking(3, "Street Parking", "Metered street parking on Elm Street", 2.00, "City Center", true),
-        Parking(4, "Valet Parking", "Convenient valet service at the restaurant", 10.00, "Restaurant District", true),
-        Parking(5, "Employee Lot", "Reserved parking for employees only", 0.00, "Company HQ", false),
-        Parking(6, "Motorcycle Parking", "Designated motorcycle parking area", 1.50, "Stadium", true),
-        Parking(7, "Permit Parking", "Requires a residential parking permit", 0.00, "Neighborhood", true),
-        Parking(8, "Short-Term Parking", "Limited to 30 minutes", 5.00, "Airport", true),
-        Parking(9, "Overnight Parking", "Permitted for overnight stays", 8.00, "Hotel", true),
-        Parking(10, "Handicap Parking", "Accessible parking spaces", 0.00, "Hospital", true)
-    )
+fun Bookings(navController: NavController,parkingViewModel: ParkingViewModel) {
+    val allParkingsResponse by parkingViewModel.allParkingsResponse.observeAsState()
+    LaunchedEffect(Unit) {
+        parkingViewModel.getAllParkings()
+    }
+    var parkings: List<com.example.inpark.data.model.Parking>? = allParkingsResponse?.body()
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = Color(0xff003C3C),) {
@@ -74,9 +71,9 @@ fun Bookings(navController: NavController) {
                         rememberScrollState()
                     )
                     .fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                    cardData.forEach {
-                            card ->
-                        longBookingCard(parking = card,navController = navController)
+                    parkings?.forEach {
+                            parking ->
+                        longBookingCard(parking = parking,navController = navController)
                     }
                 }
 

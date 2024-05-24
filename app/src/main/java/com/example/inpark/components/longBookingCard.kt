@@ -49,7 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.inpark.R
-import com.example.inpark.models.Parking
+import com.example.inpark.data.model.Parking
 import com.example.inpark.outfitFamily
 import com.lightspark.composeqr.QrCodeColors
 import com.lightspark.composeqr.QrCodeView
@@ -78,7 +78,7 @@ fun longBookingCard(parking: Parking,navController: NavController) {
         ) {
             Column {
                 Text(
-                    text = parking.name,
+                    text = parking.nom,
                     modifier = Modifier.padding(start = 3.dp),
                     style = TextStyle(
                         fontFamily = outfitFamily,
@@ -98,7 +98,7 @@ fun longBookingCard(parking: Parking,navController: NavController) {
                     )
                 )
                 Text(
-                    text = "${parking.pricePerHour}Da/hr",
+                    text = "${parking.price_per_hour}Da/hr",
                     modifier = Modifier.padding(start = 3.dp),
                     style = TextStyle(
                         fontFamily = outfitFamily,
@@ -213,7 +213,7 @@ fun longBookingCard(parking: Parking,navController: NavController) {
                         )
                         {
                             Text(
-                                text = parking.name,
+                                text = parking.nom,
                                 modifier = Modifier.padding(start = 3.dp),
                                 style = TextStyle(
                                     fontFamily = outfitFamily,
@@ -224,7 +224,7 @@ fun longBookingCard(parking: Parking,navController: NavController) {
                             )
                             Spacer(modifier = Modifier.width(35.dp))
                             Text(
-                                text = "${parking.pricePerHour}Da/hr",
+                                text = "${parking.price_per_hour}Da/hr",
                                 modifier = Modifier.padding(start = 3.dp),
                                 style = TextStyle(
                                     fontFamily = outfitFamily,
@@ -237,7 +237,7 @@ fun longBookingCard(parking: Parking,navController: NavController) {
                         Spacer(modifier = Modifier.height(15.dp))
                         Row(verticalAlignment = Alignment.CenterVertically)
                         {
-                            Rate(5.0)
+                            Rate(parking.rating.toDouble())
                             Spacer(modifier = Modifier.width(10.dp))
                             Divider(
                                 modifier = Modifier
@@ -309,7 +309,7 @@ fun Rate(rate: Double){
     Row(){
         Icon(imageVector = Icons.Filled.Star, modifier = Modifier.size(16.dp), tint = Color(0xff003C3C),contentDescription = "rate")
         Spacer(modifier = Modifier.width(5.dp))
-        Text(text = rate.toString(), style = TextStyle(fontFamily = outfitFamily, fontWeight = FontWeight.Bold, fontSize = 14.sp, color = Color(0xff003C3C)))
+        Text(text = String.format("%.1f", rate), style = TextStyle(fontFamily = outfitFamily, fontWeight = FontWeight.Bold, fontSize = 14.sp, color = Color(0xff003C3C)))
         }
 }
 
