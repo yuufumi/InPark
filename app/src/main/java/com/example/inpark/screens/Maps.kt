@@ -298,6 +298,7 @@ fun Maps(navController: NavController, parkingViewModel: ParkingViewModel) {
 
         else {
             Text(text = "Loading Map...")
+
         }
         mapSearchBar(navController)
     }

@@ -37,11 +37,12 @@ import com.example.inpark.components.TopBar
 import com.example.inpark.components.longBookingCard
 import com.example.inpark.models.Parking
 import com.example.inpark.outfitFamily
+import com.example.inpark.viewModels.LocationViewModel
 import com.example.inpark.viewModels.ParkingViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun Bookings(navController: NavController,parkingViewModel: ParkingViewModel) {
+fun Bookings(navController: NavController,parkingViewModel: ParkingViewModel,locationViewModel: LocationViewModel) {
     val allParkingsResponse by parkingViewModel.allParkingsResponse.observeAsState()
     LaunchedEffect(Unit) {
         parkingViewModel.getAllParkings()
@@ -58,7 +59,7 @@ fun Bookings(navController: NavController,parkingViewModel: ParkingViewModel) {
                 .fillMaxSize()
                 .padding(start = 24.dp, end = 24.dp, top = 28.dp, bottom = 60.dp)
             ){
-                TopBar()
+                TopBar(locationViewModel)
                 Row(){
                     Text(text = "Hello, ", style = TextStyle(fontFamily = outfitFamily, fontWeight = FontWeight.Medium, fontSize = 36.sp, color = Color(0xffFFFFF0)))
                     Text(text = "yuufumi", style = TextStyle(fontFamily = outfitFamily, fontWeight = FontWeight.Medium, fontSize = 36.sp, color = Color(0xffA0F000)))

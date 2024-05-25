@@ -12,12 +12,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModelProvider
+import com.example.inpark.viewModels.LocationViewModel
 
 @Composable
-fun TopBar(){
+fun TopBar(viewModel: LocationViewModel){
+    viewModel.getLastLocation()
     Row(modifier = Modifier.fillMaxWidth().padding(vertical = 28.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically){
-    LocationInfo()
+    LocationInfo(viewModel)
 
     Notifications()
     }

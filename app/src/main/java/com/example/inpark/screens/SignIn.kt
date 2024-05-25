@@ -1,9 +1,15 @@
 package com.example.inpark.screens
 
+import android.app.Activity
 import android.content.Context
+import android.credentials.CredentialManager
+import android.credentials.GetCredentialRequest
+import android.credentials.GetCredentialResponse
 import android.preference.PreferenceManager
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContract
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,6 +31,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.livedata.observeAsState
 
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,25 +44,44 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ActivityCompat.startActivityForResult
+import androidx.credentials.CustomCredential
 import androidx.navigation.NavController
 import com.example.inpark.components.AddProgress
 import com.example.inpark.components.CustomButton
 import com.example.inpark.components.GoogleButton
 import com.example.inpark.components.Title
+import androidx.compose.material3.Button
 import com.example.inpark.components.UserInfoTextField
 import com.example.inpark.data.api.types.AuthRequest
 import com.example.inpark.data.model.User
 import com.example.inpark.outfitFamily
 import com.example.inpark.viewModels.AuthViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.ui.semantics.Role.Companion.Button
+import com.google.android.gms.common.api.ApiException
+import com.stevdzasan.onetap.OneTapSignInWithGoogle
+import com.stevdzasan.onetap.rememberOneTapSignInState
 
 @Composable
 fun SignIn (navController: NavController, authViewModel: AuthViewModel) {
+
+
     val context = LocalContext.current
     val sharedPreferences = context.getSharedPreferences("my_prefs", Context.MODE_PRIVATE)
+    val state = rememberOneTapSignInState()
+    OneTapSignInWithGoogle(
+        state = state,
+        clientId = "453632965689-t9mv62nmno1e44qqb6dpqk24fftml20b.apps.googleusercontent.com",
+        onTokenIdReceived = { tokenId ->
+            Log.d("GOOGLE AUTH", tokenId)
+        },
+        onDialogDismissed = { message ->
+            Log.d("GOOGLE AUTH", message)
+        }
+    )
     val usernameState = remember {
         mutableStateOf("")
     }
@@ -68,6 +94,7 @@ fun SignIn (navController: NavController, authViewModel: AuthViewModel) {
         mutableStateOf(false)
     }
 
+
     val onLoginClick: () -> Unit = {
         val loginRequest = AuthRequest(username = usernameState.value, mot_de_passe = passwordState.value)
         authViewModel.loginUser(loginRequest)
@@ -76,7 +103,11 @@ fun SignIn (navController: NavController, authViewModel: AuthViewModel) {
     fun displayUsers(users:List<User>){
         Toast.makeText(context, users[0].toString(), Toast.LENGTH_SHORT).show()
     }
-    val onGoogleClick: () -> Unit = {}
+
+
+    val onGoogleClick: () -> Unit = {
+        state.open()
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -130,8 +161,6 @@ fun SignIn (navController: NavController, authViewModel: AuthViewModel) {
                         .height(1.dp) // Adjust height as needed
                         .fillMaxWidth(1f)
                 )
-
-
             }
             GoogleButton(onClick = onGoogleClick)
             Row {
@@ -162,4 +191,18 @@ fun SignIn (navController: NavController, authViewModel: AuthViewModel) {
 
         }
     }
+}
+
+@Composable
+fun getGoogleSignInOptions(): GoogleSignInOptions {
+    val context = LocalContext.current
+    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        .requestIdToken("YOUR_GOOGLE_CLIENT_ID")
+        .requestEmail()
+        .build()
+    return gso
+}
+
+fun sendIdTokenToBackend(idToken: String) {
+    // ...
 }

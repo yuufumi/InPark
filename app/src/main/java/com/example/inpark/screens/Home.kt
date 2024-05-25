@@ -52,12 +52,13 @@ import com.example.inpark.components.Title
 import com.example.inpark.components.TopBar
 import com.example.inpark.data.model.Parking
 import com.example.inpark.outfitFamily
+import com.example.inpark.viewModels.LocationViewModel
 import com.example.inpark.viewModels.ParkingViewModel
 import java.nio.file.WatchEvent
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun Home(navController: NavController,parkingViewModel: ParkingViewModel) {
+fun Home(navController: NavController,parkingViewModel: ParkingViewModel,locationViewModel: LocationViewModel) {
 
     val context = LocalContext.current
     val sharedPreferences = context.getSharedPreferences("my_prefs", Context.MODE_PRIVATE)
@@ -74,7 +75,7 @@ fun Home(navController: NavController,parkingViewModel: ParkingViewModel) {
             .padding(start = 24.dp, end = 24.dp, top = 28.dp)
             .verticalScroll(rememberScrollState())
         ){
-            TopBar()
+            TopBar(locationViewModel)
             val username = sharedPreferences.getString("username",null)
             Row(){
                 Text(text = "Hello, ", style = TextStyle(fontFamily = outfitFamily, fontWeight = FontWeight.Medium, fontSize = 36.sp, color = Color(0xffFFFFF0)))
