@@ -2,6 +2,7 @@ package com.example.inpark.data.api
 
 import com.example.inpark.data.api.types.AuthRequest
 import com.example.inpark.data.api.types.AuthResponse
+import com.example.inpark.data.api.types.EmailRequest
 import com.example.inpark.data.model.User
 import okhttp3.OkHttpClient
 
@@ -15,6 +16,7 @@ import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PartMap
+import retrofit2.http.Path
 import java.util.concurrent.TimeUnit
 
 interface AuthApi {
@@ -24,6 +26,9 @@ interface AuthApi {
 
     @POST(apiConstants.LOGIN)
     suspend fun loginUser(@Body user:AuthRequest):Response<User>
+
+    @GET("${apiConstants.GETBYEMAIL}/{email}")
+    suspend fun getByEmail(@Path("email") email:String):Response<User>
 
     @GET(apiConstants.GETUSERS)
     suspend fun getAllUsers():Response<List<User>>

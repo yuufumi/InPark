@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.inpark.data.api.types.AuthRequest
 import com.example.inpark.data.api.types.AuthResponse
+import com.example.inpark.data.api.types.EmailRequest
 import com.example.inpark.data.model.User
 import com.example.inpark.repository.AuthRepository
 import retrofit2.Response
@@ -23,6 +24,10 @@ class AuthViewModel (private val authRepository: AuthRepository) : ViewModel() {
 
     private val _loginResponse = MutableLiveData<Response<User>?>()
     val loginResponse : LiveData<Response<User>?> get() = _loginResponse
+
+
+    private val _getByEmailResponse = MutableLiveData<Response<User>?>()
+    val getByEmailResponse : LiveData<Response<User>?> get() = _getByEmailResponse
 
     private val _allUsersResponse = MutableLiveData<Response<List<User>>>()
 
@@ -81,6 +86,31 @@ class AuthViewModel (private val authRepository: AuthRepository) : ViewModel() {
         }
     }
 
+    fun getByEmail(email: String) {
+        loading.value = true
+        error.value = null
+
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val response = authRepository.getByEmail(email)
+                loading.value = false
+                if (response.isSuccessful) {
+                    withContext(Dispatchers.Main) {
+                        _getByEmailResponse.value = response
+                    }
+                    Log.d("AuthViewModel", "get user by email success: ${response.body()}")
+                } else {
+                    error.value = "Failed to login user: ${response.message()}"
+                }
+            } catch (e:Exception) {
+                Log.e("AuthViewModel", "login user error", e)
+                error.value = "Failed to login user: ${e.message}"
+            } finally {
+                loading.value = false
+            }
+        }
+    }
+
     fun getAllUsers(){
         loading.value = true
         error.value = null
@@ -108,6 +138,7 @@ class AuthViewModel (private val authRepository: AuthRepository) : ViewModel() {
 
     fun logoutUser(){
         _loginResponse.value = null
+        _getByEmailResponse.value = null
     }
     class Factory(private val authRepository: AuthRepository) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")

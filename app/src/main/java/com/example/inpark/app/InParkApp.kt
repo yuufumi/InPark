@@ -26,6 +26,7 @@ import com.example.inpark.repository.ParkingRepository
 import com.example.inpark.viewModels.AuthViewModel
 import com.example.inpark.viewModels.LocationViewModel
 import com.example.inpark.viewModels.ParkingViewModel
+import com.example.inpark.viewModels.SignInViewModel
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -49,10 +50,11 @@ fun InParkApp(viewModel: LocationViewModel){
     val authRepository by lazy { AuthRepository(authApi) }
     val parkingRepository by lazy { ParkingRepository(parkingApi) }
     val authViewModel = AuthViewModel.Factory(authRepository).create(AuthViewModel::class.java)
+    val signInViewModel = SignInViewModel.Factory(authRepository).create(SignInViewModel::class.java)
     val parkingViewModel = ParkingViewModel.Factory(parkingRepository).create(ParkingViewModel::class.java)
     NavHost(navController = navController, startDestination = startDest) {
         composable("signup") { Signup(navController,authViewModel = authViewModel) }
-        composable("signin") { SignIn(navController, authViewModel = authViewModel) }
+        composable("signin") { SignIn(navController, authViewModel = authViewModel, signInViewModel = signInViewModel) }
         composable("parkings/{parkingId}"){ backStackEntry -> val parkingId = backStackEntry.arguments?.getString("parkingId")
                         parkingDetails(parkingViewModel,parkingId!!,navController)
                     }

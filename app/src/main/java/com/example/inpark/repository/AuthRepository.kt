@@ -3,6 +3,7 @@ package com.example.inpark.repository
 import com.example.inpark.data.api.AuthApi
 import com.example.inpark.data.api.types.AuthRequest
 import com.example.inpark.data.api.types.AuthResponse
+import com.example.inpark.data.api.types.EmailRequest
 import com.example.inpark.data.model.User
 import retrofit2.Response
 import okhttp3.RequestBody
@@ -21,5 +22,9 @@ class AuthRepository(private val authApi: AuthApi) {
     }
 
     suspend fun logoutUser(){
+    }
+
+    suspend fun getByEmail(email: String):Response<User>{
+        return authApi.getByEmail(email)
     }
 }

@@ -60,28 +60,61 @@ import com.example.inpark.viewModels.AuthViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.material.Scaffold
+import androidx.compose.material.TopAppBar
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role.Companion.Button
+import com.example.inpark.data.api.types.EmailRequest
+import com.example.inpark.utils.AuthResult
+import com.example.inpark.viewModels.SignInViewModel
 import com.google.android.gms.common.api.ApiException
 import com.stevdzasan.onetap.OneTapSignInWithGoogle
 import com.stevdzasan.onetap.rememberOneTapSignInState
+import kotlinx.coroutines.launch
 
 @Composable
-fun SignIn (navController: NavController, authViewModel: AuthViewModel) {
+fun SignIn (navController: NavController, authViewModel: AuthViewModel, signInViewModel: SignInViewModel) {
 
-
+    val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val sharedPreferences = context.getSharedPreferences("my_prefs", Context.MODE_PRIVATE)
+    var text by remember { mutableStateOf<String?>(null) }
+    val user by remember(signInViewModel) { signInViewModel.user }.collectAsState()
+    val signInRequestCode = 1
     val state = rememberOneTapSignInState()
-    OneTapSignInWithGoogle(
-        state = state,
-        clientId = "453632965689-t9mv62nmno1e44qqb6dpqk24fftml20b.apps.googleusercontent.com",
-        onTokenIdReceived = { tokenId ->
-            Log.d("GOOGLE AUTH", tokenId)
-        },
-        onDialogDismissed = { message ->
-            Log.d("GOOGLE AUTH", message)
+
+    val emailResponse by authViewModel.getByEmailResponse.observeAsState()
+    val authResultLauncher = rememberLauncherForActivityResult(contract = AuthResult()) { task ->
+        try {
+            val account = task?.getResult(ApiException::class.java)
+            if (account == null) {
+                text = "Google Sign In Failed"
+            } else {
+                authViewModel.getByEmail(account.email!!)
+                if(emailResponse == null){
+                    Log.e("valeur ta3ha", emailResponse.toString())
+                }else {
+                    scope.launch {
+                        signInViewModel.setSignInValue(
+                            email = emailResponse!!.body()!!.email,
+                            username = emailResponse!!.body()!!.username,
+                            nom = emailResponse!!.body()!!.nom,
+                            prenom = emailResponse!!.body()!!.prenom,
+                            mot_de_passe = emailResponse!!.body()!!.prenom,
+                            num_telephone = emailResponse!!.body()!!.num_telephone,
+                            id = emailResponse!!.body()!!.userId
+                        )
+                    }
+                }
+            }
+        } catch (e: ApiException) {
+            text = e.localizedMessage
         }
-    )
+    }
+
+
     val usernameState = remember {
         mutableStateOf("")
     }
@@ -106,7 +139,7 @@ fun SignIn (navController: NavController, authViewModel: AuthViewModel) {
 
 
     val onGoogleClick: () -> Unit = {
-        state.open()
+        authResultLauncher.launch(signInRequestCode)
     }
     Column(
         modifier = Modifier
@@ -126,13 +159,24 @@ fun SignIn (navController: NavController, authViewModel: AuthViewModel) {
             var password = UserInfoTextField(label = "Password", placeholder = "", type = "password", state = passwordState)
             CustomButton(label = "Login", onbtnClick = onLoginClick)
             AddProgress(authViewModel = authViewModel)
-            if ((loginResponse != null) && (!isLoggedIn)) {
-                sharedPreferences.edit().putString("id", loginResponse?.body()?.userId.toString())
-                    .apply()
-                sharedPreferences.edit()
-                    .putString("username", loginResponse?.body()?.username.toString()).apply()
-                navController.navigate("home")
-                isLoggedIn =true
+            if (!isLoggedIn) {
+                if(loginResponse != null){
+                    sharedPreferences.edit().putString("id", loginResponse?.body()?.userId.toString())
+                        .apply()
+                    sharedPreferences.edit()
+                        .putString("username", loginResponse?.body()?.username.toString()).apply()
+                    navController.navigate("home")
+                    isLoggedIn =true
+                }else if(emailResponse != null){
+                    sharedPreferences.edit().putString("id", emailResponse?.body()?.userId.toString())
+                        .apply()
+                    sharedPreferences.edit()
+                        .putString("username", emailResponse?.body()?.username.toString()).apply()
+
+                    navController.navigate("home")
+                    isLoggedIn =true
+                }
+
             }
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -192,6 +236,55 @@ fun SignIn (navController: NavController, authViewModel: AuthViewModel) {
         }
     }
 }
+
+//@Composable
+//fun AuthView(
+//    errorText: String?,
+//    onClick: () -> Unit
+//) {
+//    var isLoading by remember { mutableStateOf(false) }
+//
+//    Scaffold(
+//        topBar = {
+//            TopAppBar(
+//                title = {
+//                    androidx.compose.material.Text(
+//                        text = "Google Sign In",
+//                        modifier = Modifier.fillMaxWidth(),
+//                        textAlign = TextAlign.Center
+//                    )
+//                }
+//            )
+//        }
+//    ) {innerPadding ->
+//        Column(
+//            modifier = Modifier.fillMaxSize().padding(innerPadding),
+//            verticalArrangement = Arrangement.Center,
+//            horizontalAlignment = Alignment.CenterHorizontally
+//        ) {
+//            GoogleSignInButton(
+//                text = "Sign In with Google",
+//                icon = painterResource(id = R.drawable.google_sign_in_btn),
+//                loadingText = "Signing In...",
+//                isLoading = isLoading,
+//                onClick = {
+//                    isLoading = true
+//                    onClick()
+//                }
+//            )
+//
+//            errorText?.let {
+//                isLoading = false
+//
+//                Spacer(modifier = Modifier.height(30.dp))
+//
+//                androidx.compose.material.Text(
+//                    text = it
+//                )
+//            }
+//        }
+//    }
+//}
 
 @Composable
 fun getGoogleSignInOptions(): GoogleSignInOptions {

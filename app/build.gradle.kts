@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.inpark"
-        minSdk = 32
+        minSdk = 29
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -126,4 +126,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    //google OAuth
+    implementation("com.google.android.gms:play-services-auth:19.2.0")
+
 }
