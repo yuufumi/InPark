@@ -12,8 +12,8 @@ interface UserDao {
     @Query("SELECT * from User")
     fun getAllUsers():List<User>
 
-    @Query("SELECT * FROM User WHERE email=:email LIMIT 1")
-    fun getUserByEmail(email:String):User?
+    @Query("SELECT * FROM User WHERE id=:id LIMIT 1")
+    fun getUserById(id:String):User?
     @Insert
     fun addUsers(vararg users: User)
 
@@ -23,6 +23,6 @@ interface UserDao {
     @Update
     fun updateUser(user: User)
 
-    @Delete
-    fun deleteUser(user: User)
+    @Query("DELETE FROM User WHERE id = :id")
+    fun deleteUser(id: String)
 }

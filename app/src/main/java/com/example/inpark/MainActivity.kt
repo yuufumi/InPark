@@ -9,6 +9,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -19,9 +20,14 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.example.inpark.app.InParkApp
+import com.example.inpark.data.database.AppDatabase
 import com.example.inpark.utils.AppPermissions
 import com.example.inpark.viewModels.LocationViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 val outfitFamily = FontFamily(
@@ -36,20 +42,22 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val viewModel = ViewModelProvider(this)[LocationViewModel::class.java]
-
         viewModel.getLastLocation()
         installSplashScreen()
         requestLocationPermission()
-        setContent {
-            Surface(
-                modifier = Modifier.fillMaxSize(),
-                color = Color(0xff002020),
-            ) {
-                InParkApp(viewModel)
-
-            }
+                val db = AppDatabase.getDBInstance(applicationContext)
+                val userDao = db.getUserDao()
+                val parkingDao = db.getParkingDao()
+                setContent {
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = Color(0xff002020),
+                    ) {
+                        InParkApp(viewModel,userDao)
+                    }
 
         }
+
     }
 
     private fun requestLocationPermission() {

@@ -10,6 +10,7 @@ import com.example.inpark.data.api.SearchRequest
 import com.example.inpark.data.api.types.AuthRequest
 import com.example.inpark.data.model.User
 import com.example.inpark.data.model.Parking
+import com.example.inpark.data.model.ParkingSlot
 import com.example.inpark.repository.AuthRepository
 import com.example.inpark.repository.ParkingRepository
 import kotlinx.coroutines.CoroutineScope
@@ -22,8 +23,14 @@ class ParkingViewModel(private val parkingRepository: ParkingRepository): ViewMo
 
     private val _allParkingsResponse = MutableLiveData<Response<List<Parking>>>()
 
+    private val _placesPerParkingResponse = MutableLiveData<Response<List<ParkingSlot>>>()
 
+    private val _parkingByPlaceResponse = MutableLiveData<Response<Parking>?>()
     val allParkingsResponse : LiveData<Response<List<Parking>>> get() = _allParkingsResponse
+
+    val placesPerParkingResponse : LiveData<Response<List<ParkingSlot>>> get() = _placesPerParkingResponse
+
+    val parkingByPlaceResponse : MutableLiveData<Response<Parking>?> get() = _parkingByPlaceResponse
 
     private val _parkingByIdResponse = MutableLiveData<Response<Parking>>()
 
@@ -33,6 +40,7 @@ class ParkingViewModel(private val parkingRepository: ParkingRepository): ViewMo
 
     val searchParkingsResponse: LiveData<Response<List<Parking>>> get() = _searchParkingsResponse
     val loading = mutableStateOf(false)
+    val loadingSlots = mutableStateOf(false)
     val error = mutableStateOf<String?>(null)
 
     fun getAllParkings(){
@@ -46,6 +54,32 @@ class ParkingViewModel(private val parkingRepository: ParkingRepository): ViewMo
                 if (response.isSuccessful) {
                     withContext(Dispatchers.Main) {
                         _allParkingsResponse.value = response
+                    }
+                    Log.d("ParkingViewModel", "fetching parkings success: ${response.body()}")
+                } else {
+                    error.value = "Failed to fetch parkings: ${response.message()}"
+                }
+
+            } catch (e: Exception) {
+                Log.e("ParkingViewModel", "fetch parkings error", e)
+                error.value = "Failed to fetch parkings: ${e.message}"
+            } finally {
+                loading.value = false
+            }
+        }
+    }
+
+    fun getParkingByPlaceId(id:String){
+        loading.value = true
+        error.value = null
+        _parkingByPlaceResponse.value = null
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val response = parkingRepository.getParkingByPlaceId(id)
+                loading.value = false
+                if (response.isSuccessful) {
+                    withContext(Dispatchers.Main) {
+                        _parkingByPlaceResponse.value = response
                     }
                     Log.d("ParkingViewModel", "fetching parkings success: ${response.body()}")
                 } else {
@@ -108,6 +142,31 @@ class ParkingViewModel(private val parkingRepository: ParkingRepository): ViewMo
                 error.value = "Failed to search parkings: ${e.message}"
             } finally {
                 loading.value = false
+            }
+        }
+    }
+
+    fun getSlotsByParking(id:String){
+        loadingSlots.value = true
+        error.value = null
+
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val response = parkingRepository.getSlotsByParking(id)
+                if (response.isSuccessful) {
+                    withContext(Dispatchers.Main) {
+                        _placesPerParkingResponse.value = response
+                        loadingSlots.value = false
+                    }
+                    Log.d("ParkingViewModel", "fetching parking by id success: ${response.body()}")
+                } else {
+                    error.value = "Failed to fetch parking by id: ${response.message()}"
+                }
+            } catch (e:Exception) {
+                Log.e("ParkingViewModel", "fetch parking error", e)
+                error.value = "Failed to fetch parking: ${e.message}"
+            } finally {
+                loadingSlots.value = false
             }
         }
     }

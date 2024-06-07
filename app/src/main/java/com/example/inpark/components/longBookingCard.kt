@@ -1,5 +1,6 @@
 package com.example.inpark.components
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -32,7 +33,9 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -50,221 +53,240 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.inpark.R
 import com.example.inpark.data.model.Parking
+import com.example.inpark.data.model.Reservation
 import com.example.inpark.outfitFamily
+import com.example.inpark.utils.convertToDate
+import com.example.inpark.viewModels.ParkingViewModel
 import com.lightspark.composeqr.QrCodeColors
 import com.lightspark.composeqr.QrCodeView
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun longBookingCard(parking: Parking,navController: NavController) {
+fun longBookingCard(reservation: Reservation,parkingViewModel:ParkingViewModel,navController: NavController) {
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
+    val parkingByPlaceResponse by parkingViewModel.parkingByPlaceResponse.observeAsState()
+    LaunchedEffect(Unit) {
+        parkingViewModel.getParkingByPlaceId(reservation.placeId.toString())
+        Log.d("PLACE",reservation.placeId.toString())
+    }
+    var parking: Parking? = parkingByPlaceResponse?.body()
     var showBottomSheet by remember { mutableStateOf(false) }
-    Card(
-        colors = CardDefaults.cardColors(
-            containerColor = Color(0xffF5FFFA)
-        ),
-        modifier = Modifier
-            .size(width = 324.dp, height = 125.dp)
-
-    ) {
-        Row(
+    if (parking != null) {
+        Card(
+            colors = CardDefaults.cardColors(
+                containerColor = Color(0xffF5FFFA)
+            ),
             modifier = Modifier
-                .fillMaxSize()
-                .padding(15.dp)
-                .clickable { showBottomSheet = true },
-            horizontalArrangement = Arrangement.SpaceBetween
+                .size(width = 324.dp, height = 125.dp)
+
         ) {
-            Column {
-                Text(
-                    text = parking.nom,
-                    modifier = Modifier.padding(start = 3.dp),
-                    style = TextStyle(
-                        fontFamily = outfitFamily,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 18.sp,
-                        color = Color(0xff000000)
-                    )
-                )
-                Text(
-                    text = parking.location,
-                    modifier = Modifier.padding(start = 3.dp),
-                    style = TextStyle(
-                        fontFamily = outfitFamily,
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 14.sp,
-                        color = Color(0x5f000000)
-                    )
-                )
-                Text(
-                    text = "${parking.price_per_hour}Da/hr",
-                    modifier = Modifier.padding(start = 3.dp),
-                    style = TextStyle(
-                        fontFamily = outfitFamily,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 12.sp,
-                        color = Color(0xff000000)
-                    )
-                )
-                Row {
-                    Text(
-                        text = "Entry Date: ",
-                        modifier = Modifier.padding(start = 3.dp),
-                        style = TextStyle(
-                            fontFamily = outfitFamily,
-                            fontWeight = FontWeight.Medium,
-                            fontSize = 12.sp,
-                            color = Color(0xff000000)
-                        )
-                    )
-                    Text(
-                        text = "01/05/2024 16:00",
-                        modifier = Modifier.padding(start = 3.dp),
-                        style = TextStyle(
-                            fontFamily = outfitFamily,
-                            fontWeight = FontWeight.Medium,
-                            fontSize = 12.sp,
-                            color = Color(0xff143C3C)
-                        )
-                    )
-                }
-                Row {
-                    Text(
-                        text = "Entry Date: ",
-                        modifier = Modifier.padding(start = 3.dp),
-                        style = TextStyle(
-                            fontFamily = outfitFamily,
-                            fontWeight = FontWeight.Medium,
-                            fontSize = 12.sp,
-                            color = Color(0xff000000)
-                        )
-                    )
-                    Text(
-                        text = "01/05/2024 16:00",
-                        modifier = Modifier.padding(start = 3.dp),
-                        style = TextStyle(
-                            fontFamily = outfitFamily,
-                            fontWeight = FontWeight.Medium,
-                            fontSize = 12.sp,
-                            color = Color(0xff143C3C)
-                        )
-                    )
-                }
-            }
-            Box(
+            Row(
                 modifier = Modifier
-                    .size(width = 100.dp, height = 100.dp) // Fills the entire screen
-                    .background(color = Color.Transparent)
-                    .clip(RoundedCornerShape(10.dp)),
-                // Optional background color (useful for visibility)
+                    .fillMaxSize()
+                    .padding(15.dp)
+                    .clickable { showBottomSheet = true },
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                // Add your content here (e.g., Text, Column, etc.)
-                Image(
+                Column {
+                    Text(
+                        text = parking.nom,
+                        modifier = Modifier.padding(start = 3.dp),
+                        style = TextStyle(
+                            fontFamily = outfitFamily,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 18.sp,
+                            color = Color(0xff000000)
+                        )
+                    )
+                    Text(
+                        text = parking.location,
+                        modifier = Modifier.padding(start = 3.dp),
+                        style = TextStyle(
+                            fontFamily = outfitFamily,
+                            fontWeight = FontWeight.Medium,
+                            fontSize = 14.sp,
+                            color = Color(0x5f000000)
+                        )
+                    )
+                    Text(
+                        text = "${parking.price_per_hour}Da/hr",
+                        modifier = Modifier.padding(start = 3.dp),
+                        style = TextStyle(
+                            fontFamily = outfitFamily,
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 12.sp,
+                            color = Color(0xff000000)
+                        )
+                    )
+                    Row {
+                        Text(
+                            text = "Entry Date: ",
+                            modifier = Modifier.padding(start = 3.dp),
+                            style = TextStyle(
+                                fontFamily = outfitFamily,
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 12.sp,
+                                color = Color(0xff000000)
+                            )
+                        )
+                        Text(
+                            text = "${convertToDate(reservation.date_entree)} ${reservation.heure_entree}",
+                            modifier = Modifier.padding(start = 3.dp),
+                            style = TextStyle(
+                                fontFamily = outfitFamily,
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 12.sp,
+                                color = Color(0xff143C3C)
+                            )
+                        )
+                    }
+                    Row {
+                        Text(
+                            text = "Exit Date: ",
+                            modifier = Modifier.padding(start = 3.dp),
+                            style = TextStyle(
+                                fontFamily = outfitFamily,
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 12.sp,
+                                color = Color(0xff000000)
+                            )
+                        )
+                        Text(
+                            text = "${convertToDate(reservation.date_sortie)} ${reservation.heure_sortie}",
+                            modifier = Modifier.padding(start = 3.dp),
+                            style = TextStyle(
+                                fontFamily = outfitFamily,
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 12.sp,
+                                color = Color(0xff143C3C)
+                            )
+                        )
+                    }
+                }
+                Box(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .aspectRatio(1f),
-                    contentScale = ContentScale.Crop,
-                    // Fills the container (adjust as// Resize behavior
-                    painter = painterResource(id = R.drawable.parking_example), // Replace with your image resource
-                    contentDescription = "parking Image" // Optional content description for accessibility
-                )
+                        .size(width = 100.dp, height = 100.dp) // Fills the entire screen
+                        .background(color = Color.Transparent)
+                        .clip(RoundedCornerShape(10.dp)),
+                    // Optional background color (useful for visibility)
+                ) {
+                    // Add your content here (e.g., Text, Column, etc.)
+                    Image(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .aspectRatio(1f),
+                        contentScale = ContentScale.Crop,
+                        // Fills the container (adjust as// Resize behavior
+                        painter = painterResource(id = R.drawable.parking_example), // Replace with your image resource
+                        contentDescription = "parking Image" // Optional content description for accessibility
+                    )
+                }
             }
         }
-    }
-    if (showBottomSheet) {
-        ModalBottomSheet(onDismissRequest = {showBottomSheet = false},contentColor = Color(0xfffffff0),sheetState = sheetState, modifier = Modifier
-            .fillMaxWidth())
-        {
-            Column(horizontalAlignment = Alignment.CenterHorizontally)
+        if (showBottomSheet) {
+            ModalBottomSheet(
+                onDismissRequest = { showBottomSheet = false },
+                contentColor = Color(0xfffffff0),
+                sheetState = sheetState,
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
             {
-                Row(
-                    modifier = Modifier
-
-                        .padding(horizontal = 25.dp),
-                    horizontalArrangement = Arrangement.spacedBy(15.dp)
-                )
+                Column(horizontalAlignment = Alignment.CenterHorizontally)
                 {
-                    Box(
+                    Row(
                         modifier = Modifier
-                            .size(width = 100.dp, height = 100.dp)
-                            .background(color = Color.Transparent)
-                            .clip(RoundedCornerShape(10.dp))
+
+                            .padding(horizontal = 25.dp),
+                        horizontalArrangement = Arrangement.spacedBy(15.dp)
                     )
                     {
-                        // Add your content here (e.g., Text, Column, etc.)
-                        Image(
+                        Box(
                             modifier = Modifier
-                                .fillMaxSize()
-                                .aspectRatio(1f),
-                            contentScale = ContentScale.Crop,
-                            // Fills the container (adjust as// Resize behavior
-                            painter = painterResource(id = R.drawable.parking_example), // Replace with your image resource
-                            contentDescription = "parking Image" // Optional content description for accessibility
-                        )
-                    }
-                    Column()
-                    {
-                        Spacer(modifier = Modifier.height(10.dp))
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
+                                .size(width = 100.dp, height = 100.dp)
+                                .background(color = Color.Transparent)
+                                .clip(RoundedCornerShape(10.dp))
                         )
                         {
-                            Text(
-                                text = parking.nom,
-                                modifier = Modifier.padding(start = 3.dp),
-                                style = TextStyle(
-                                    fontFamily = outfitFamily,
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 18.sp,
-                                    color = Color(0xff000000)
-                                )
-                            )
-                            Spacer(modifier = Modifier.width(35.dp))
-                            Text(
-                                text = "${parking.price_per_hour}Da/hr",
-                                modifier = Modifier.padding(start = 3.dp),
-                                style = TextStyle(
-                                    fontFamily = outfitFamily,
-                                    fontWeight = FontWeight.Medium,
-                                    fontSize = 16.sp,
-                                    color = Color(0xff000000)
-                                )
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(15.dp))
-                        Row(verticalAlignment = Alignment.CenterVertically)
-                        {
-                            Rate(parking.rating.toDouble())
-                            Spacer(modifier = Modifier.width(10.dp))
-                            Divider(
+                            // Add your content here (e.g., Text, Column, etc.)
+                            Image(
                                 modifier = Modifier
-                                    .height(20.dp)
-                                    .width(2.dp), color = Color(0xff002020)
-                            )
-                            Spacer(modifier = Modifier.width(10.dp))
-                            Text(
-                                text = parking.location,
-                                modifier = Modifier.padding(start = 3.dp),
-                                style = TextStyle(
-                                    fontFamily = outfitFamily,
-                                    fontWeight = FontWeight.Medium,
-                                    fontSize = 14.sp,
-                                    color = Color(0x5f000000)
-                                )
+                                    .fillMaxSize()
+                                    .aspectRatio(1f),
+                                contentScale = ContentScale.Crop,
+                                // Fills the container (adjust as// Resize behavior
+                                painter = painterResource(id = R.drawable.parking_example), // Replace with your image resource
+                                contentDescription = "parking Image" // Optional content description for accessibility
                             )
                         }
+                        Column()
+                        {
+                            Spacer(modifier = Modifier.height(10.dp))
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            )
+                            {
+                                Text(
+                                    text = parking.nom,
+                                    modifier = Modifier.padding(start = 3.dp),
+                                    style = TextStyle(
+                                        fontFamily = outfitFamily,
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 18.sp,
+                                        color = Color(0xff000000)
+                                    )
+                                )
+                                Spacer(modifier = Modifier.width(35.dp))
+                                Text(
+                                    text = "${parking.price_per_hour}Da/hr",
+                                    modifier = Modifier.padding(start = 3.dp),
+                                    style = TextStyle(
+                                        fontFamily = outfitFamily,
+                                        fontWeight = FontWeight.Medium,
+                                        fontSize = 16.sp,
+                                        color = Color(0xff000000)
+                                    )
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(15.dp))
+                            Row(verticalAlignment = Alignment.CenterVertically)
+                            {
+                                Rate(parking.rating.toDouble())
+                                Spacer(modifier = Modifier.width(10.dp))
+                                Divider(
+                                    modifier = Modifier
+                                        .height(20.dp)
+                                        .width(2.dp), color = Color(0xff002020)
+                                )
+                                Spacer(modifier = Modifier.width(10.dp))
+                                Text(
+                                    text = parking.location,
+                                    modifier = Modifier.padding(start = 3.dp),
+                                    style = TextStyle(
+                                        fontFamily = outfitFamily,
+                                        fontWeight = FontWeight.Medium,
+                                        fontSize = 14.sp,
+                                        color = Color(0x5f000000)
+                                    )
+                                )
+                            }
 
+                        }
                     }
-                }
-                Spacer(modifier = Modifier.height(20.dp))
-                Row(modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 30.dp),verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 30.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
                         Text(
-                            text = "01/05/2024 16:00",
+                            text = "${convertToDate(reservation.date_entree)} ${reservation.heure_entree}",
                             style = TextStyle(
                                 fontFamily = outfitFamily,
                                 fontWeight = FontWeight.SemiBold,
@@ -278,7 +300,7 @@ fun longBookingCard(parking: Parking,navController: NavController) {
                                 .height(2.dp), color = Color(0xff002020)
                         )
                         Text(
-                            text = "01/05/2024 16:00",
+                            text = "${convertToDate(reservation.date_sortie)} ${reservation.heure_sortie}",
                             style = TextStyle(
                                 fontFamily = outfitFamily,
                                 fontWeight = FontWeight.SemiBold,
@@ -286,23 +308,40 @@ fun longBookingCard(parking: Parking,navController: NavController) {
                                 color = Color(0xff143C3C)
                             )
                         )
-                }
-                Spacer(modifier = Modifier.height(15.dp))
-                QrCodeView(
-                    data = "localhost:8000/${parking.id}",
-                    modifier = Modifier.size(130.dp),
-                    colors = QrCodeColors(background = Color(0xffffffff),foreground = Color(0xff003C3C))
-                )
-                Spacer(modifier = Modifier.height(15.dp))
-                Button(modifier = Modifier.fillMaxWidth(0.6f),shape = RoundedCornerShape(10.dp),onClick = {navController.navigate("parkings/${parking.id}")}, colors = ButtonDefaults.buttonColors(containerColor = Color(0xff003C3C))) {
-                    Text(text="Details", style = TextStyle(fontFamily = outfitFamily, fontWeight = FontWeight.SemiBold, fontSize = 16.sp, color = Color(0xfffffff0)))
-                }
-                Spacer(modifier = Modifier.height(60.dp))
+                    }
+                    Spacer(modifier = Modifier.height(15.dp))
+                    QrCodeView(
+                        data = "localhost:8000/${parking.id}",
+                        modifier = Modifier.size(130.dp),
+                        colors = QrCodeColors(
+                            background = Color(0xffffffff),
+                            foreground = Color(0xff003C3C)
+                        )
+                    )
+                    Spacer(modifier = Modifier.height(15.dp))
+                    Button(
+                        modifier = Modifier.fillMaxWidth(0.6f),
+                        shape = RoundedCornerShape(10.dp),
+                        onClick = { navController.navigate("parkings/${parking.id}") },
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xff003C3C))
+                    ) {
+                        Text(
+                            text = "Details",
+                            style = TextStyle(
+                                fontFamily = outfitFamily,
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 16.sp,
+                                color = Color(0xfffffff0)
+                            )
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(60.dp))
                 }
             }
         }
 
     }
+}
 
 @Composable
 fun Rate(rate: Double){

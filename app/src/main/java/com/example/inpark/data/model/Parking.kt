@@ -17,5 +17,12 @@ data class Parking(
     var openning_hour:String,
     var price_per_hour:Float,
     var rating: Float,
-    var status:Boolean
+    var status:Boolean,
+    var sat: Boolean,
+    var sun: Boolean,
+    var mon: Boolean,
+    var tue: Boolean,
+    var wed: Boolean,
+    var thu: Boolean,
+    var fri: Boolean,
 )

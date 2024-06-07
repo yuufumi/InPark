@@ -8,8 +8,10 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.location.LocationManager
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -282,11 +284,11 @@ fun Maps(navController: NavController, parkingViewModel: ParkingViewModel) {
                         }
                         Spacer(modifier = Modifier.height(15.dp))
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
-                            Button(modifier = Modifier.fillMaxWidth(0.3f), shape = RoundedCornerShape(10.dp),onClick = {navController.navigate("parkings/${selectedParking!!.id}")}, colors = ButtonDefaults.buttonColors(containerColor = Color(0xff003C3C))) {
+                            Button(modifier = Modifier.fillMaxWidth(0.3f), shape = RoundedCornerShape(10.dp),onClick = {navController.navigate("reservations/${selectedParking!!.id}")}, colors = ButtonDefaults.buttonColors(containerColor = Color(0xff003C3C))) {
                                 Text(text="Reserve", style = TextStyle(fontFamily = outfitFamily, fontWeight = FontWeight.SemiBold, fontSize = 16.sp, color = Color(0xfffffff0)))
                             }
-                            Button(shape = RoundedCornerShape(10.dp),onClick = {navController.navigate("parkings/${selectedParking!!.id}")}, colors = ButtonDefaults.buttonColors(containerColor = Color(0xff087990))) {
-                                Text(text="Details", style = TextStyle(fontFamily = outfitFamily, fontWeight = FontWeight.SemiBold, fontSize = 16.sp, color = Color(0xfffffff0)))
+                            Button(border = BorderStroke(1.dp,color = Color(0xff003C3C)),shape = RoundedCornerShape(10.dp),onClick = {navController.navigate("parkings/${selectedParking!!.id}")}, colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)) {
+                                Text(text="Details", style = TextStyle(fontFamily = outfitFamily, fontWeight = FontWeight.SemiBold, fontSize = 16.sp, color = Color(0xff003C3C)))
                             }
                         }
                         Spacer(modifier = Modifier.height(60.dp))

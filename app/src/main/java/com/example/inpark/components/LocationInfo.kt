@@ -29,10 +29,18 @@ fun LocationInfo(viewModel:LocationViewModel){
         Image(painter = painterResource(id = R.drawable.unselected_maps), modifier = Modifier.size(30.dp), contentDescription = "location")
         Column {
             Text(text="Location", style = TextStyle(fontFamily = outfitFamily, color = Color(0x7fFFFFf0), fontSize = 12.sp))
-            location?.let {
-                Text(text= getLocationText(it.latitude,it.longitude,context)!!, style = TextStyle(fontFamily = outfitFamily, color = Color(0xffFFFFF0), fontSize = 12.sp))
-            } ?:
-            Text(text="Loading location", style = TextStyle(fontFamily = outfitFamily, color = Color(0xffFFFFF0), fontSize = 12.sp))
-    }
+            if(location!= null){
+                Text(text= getLocationText(location!!.latitude,location!!.longitude,context)!!, style = TextStyle(fontFamily = outfitFamily, color = Color(0xffFFFFF0), fontSize = 12.sp))
+            } else {
+                Text(
+                    text = "Loading location",
+                    style = TextStyle(
+                        fontFamily = outfitFamily,
+                        color = Color(0xffFFFFF0),
+                        fontSize = 12.sp
+                    )
+                )
+            }
+            }
 }
 }

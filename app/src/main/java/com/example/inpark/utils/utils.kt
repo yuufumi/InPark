@@ -12,10 +12,12 @@ import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.LatLng
+import java.text.SimpleDateFormat
 import java.time.LocalTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.util.TimeZone
 
 
 fun extractHour(timeStamp: String): String{
@@ -65,4 +67,20 @@ fun getCurrentLocation(context: Context, onLocationFetched: (location: LatLng) -
             Log.d("MAP-EXCEPTION",exception.message.toString())
         }
 
+}
+
+fun convertToISODateTime(dateString: String): String {
+    val inputFormat = SimpleDateFormat("dd/M/yyyy", java.util.Locale.getDefault())
+    val date = inputFormat.parse(dateString)
+    val outputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", java.util.Locale.getDefault())
+    outputFormat.timeZone = TimeZone.getTimeZone("UTC")
+    return outputFormat.format(date)
+}
+
+fun convertToDate(dateString: String): String {
+    val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", java.util.Locale.getDefault())
+    val date = inputFormat.parse(dateString)
+    val outputFormat = SimpleDateFormat("dd/M/yyyy", java.util.Locale.getDefault())
+    outputFormat.timeZone = TimeZone.getTimeZone("UTC")
+    return outputFormat.format(date)
 }

@@ -25,6 +25,10 @@ class AuthViewModel (private val authRepository: AuthRepository) : ViewModel() {
     private val _loginResponse = MutableLiveData<Response<User>?>()
     val loginResponse : LiveData<Response<User>?> get() = _loginResponse
 
+    private val _getByIdResponse = MutableLiveData<User>()
+
+    val getByIdResponse :  LiveData<User> get() = _getByIdResponse
+
 
     private val _getByEmailResponse = MutableLiveData<Response<User>?>()
     val getByEmailResponse : LiveData<Response<User>?> get() = _getByEmailResponse
@@ -72,6 +76,8 @@ class AuthViewModel (private val authRepository: AuthRepository) : ViewModel() {
                 if (response.isSuccessful) {
                     withContext(Dispatchers.Main) {
                         _loginResponse.value = response
+                        val user:User = response.body()!!
+                        authRepository.addUser(user)
                     }
                     Log.d("AuthViewModel", "Login user success: ${response.body()}")
                 } else {
@@ -82,6 +88,25 @@ class AuthViewModel (private val authRepository: AuthRepository) : ViewModel() {
                 error.value = "Failed to login user: ${e.message}"
             } finally {
                 loading.value = false
+            }
+        }
+    }
+
+    fun getById(id:String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val user = authRepository.getById(id)
+                loading.value = false
+                if (user != null) {
+                    withContext(Dispatchers.Main) {
+                        _getByIdResponse.value = user
+                    }
+                    Log.d("AuthViewModel", "Login user success")
+                } else {
+                    error.value = "Failed to login user"
+                }
+            } catch (e: Exception) {
+                Log.e("addUser(signUp)", "Database operation failed", e)
             }
         }
     }
@@ -136,9 +161,32 @@ class AuthViewModel (private val authRepository: AuthRepository) : ViewModel() {
         }
     }
 
-    fun logoutUser(){
+    fun logoutUser(id: String){
         _loginResponse.value = null
         _getByEmailResponse.value = null
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                authRepository.deleteUser(id)
+            } catch (e:Exception) {
+                Log.e("AuthViewModel", "login user error", e)
+                error.value = "Failed to login user: ${e.message}"
+            } finally {
+                loading.value = false
+            }
+        }
+    }
+
+    fun addUser(user:User){
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                authRepository.addUser(user)
+            } catch (e:Exception) {
+                Log.e("AuthViewModel", "login user error", e)
+                error.value = "Failed to login user: ${e.message}"
+            } finally {
+                loading.value = false
+            }
+        }
     }
     class Factory(private val authRepository: AuthRepository) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")

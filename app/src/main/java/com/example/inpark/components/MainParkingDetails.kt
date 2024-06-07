@@ -126,13 +126,13 @@ fun MainParkingDetails(parking:Parking){
         }
         Spacer(modifier = Modifier.height(15.dp))
         Row(modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(10.dp)), horizontalArrangement = Arrangement.SpaceBetween){
-            day(day = "Sun", open = true)
-            day(day = "Mon", open = true)
-            day(day = "Tue", open = true)
-            day(day = "Wed", open = true)
-            day(day = "Thu", open = true)
-            day(day = "Fri", open = false)
-            day(day = "Sat", open = false)
+            day(day = "Sun", open = parking.sun)
+            day(day = "Mon", open = parking.mon)
+            day(day = "Tue", open = parking.tue)
+            day(day = "Wed", open = parking.wed)
+            day(day = "Thu", open = parking.thu)
+            day(day = "Fri", open = parking.fri)
+            day(day = "Sat", open = parking.sat)
         }
 
     }
@@ -142,8 +142,8 @@ fun MainParkingDetails(parking:Parking){
 fun Rating(rate: Double){
     Row(verticalAlignment = Alignment.CenterVertically,){
         Text(text = rate.toString(), style = TextStyle(fontFamily = outfitFamily, fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color(0xffA0F000)))
-        Spacer(modifier = Modifier.width(10.dp))
         Icon(imageVector = Icons.Filled.Star, modifier = Modifier.size(16.dp), tint = Color(0xffA0F000),contentDescription = "rate")
+        Spacer(modifier = Modifier.width(10.dp))
         Icon(imageVector = Icons.Filled.Star, modifier = Modifier.size(16.dp), tint = Color(0xffA0F000),contentDescription = "rate")
         Icon(imageVector = Icons.Filled.Star, modifier = Modifier.size(16.dp), tint = Color(0xffA0F000),contentDescription = "rate")
         Icon(imageVector = Icons.Filled.Star, modifier = Modifier.size(16.dp), tint = Color(0xffA0F000),contentDescription = "rate")

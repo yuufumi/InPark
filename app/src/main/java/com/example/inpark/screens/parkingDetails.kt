@@ -58,9 +58,6 @@ fun parkingDetails(parkingViewModel: ParkingViewModel,parkingId: String,navContr
             horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
                 .fillMaxSize()
                 .padding(start = 24.dp, end = 24.dp, top = 28.dp, bottom = 60.dp)
-                .verticalScroll(
-                    rememberScrollState()
-                )
         ) {
 
             ParkingTopBar(navController)

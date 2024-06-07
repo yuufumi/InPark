@@ -1,7 +1,6 @@
 package com.example.inpark.screens
 
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -14,7 +13,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -35,15 +33,9 @@ import com.example.inpark.components.CustomButton
 import com.example.inpark.components.Title
 import com.example.inpark.components.UserInfoTextField
 import com.example.inpark.data.model.User
-import com.example.inpark.data.model.signUpState
 
 import com.example.inpark.outfitFamily
 import com.example.inpark.viewModels.AuthViewModel
-import com.example.inpark.viewModels.UserviewModel
-import com.google.firebase.auth.UserInfo
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
 
 @Composable
 fun Signup(navController: NavController, authViewModel: AuthViewModel){
@@ -129,7 +121,7 @@ fun Signup(navController: NavController, authViewModel: AuthViewModel){
         CustomButton(label = "Register", onbtnClick = onSignUpClick)
         AddProgress(authViewModel = authViewModel)
         if((signupResponse != null) && !SignedUp){
-            sharedPreferences.edit().putString("id", signupResponse?.body()?.userId.toString()).apply()
+            sharedPreferences.edit().putString("id", signupResponse?.body()?.id.toString()).apply()
             navController.navigate("signin")
             SignedUp = true
         }

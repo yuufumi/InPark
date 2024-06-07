@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">InPark</string>
-    <string name="google_client_id">453632965689-dum60ajt7qdo87vre636i6q9v9qo7n5f.apps.googleusercontent.com</string>
+    <string name="google_client_id">453632965689-s1d778s78l0156v3331v9d1d8rho2a9t.apps.googleusercontent.com</string>
     <string name="title_activity_maps">MapsActivity</string>
     <string name="google_map_api_key">AIzaSyA2RG5IE8nvaXNyPt64o3SpO4RZYvcBRkw</string>
     <string name="userId">1</string>

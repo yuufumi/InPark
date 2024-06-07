@@ -1,38 +1,32 @@
 package com.example.inpark.data.api
 
 import com.example.inpark.data.model.Parking
-import com.example.inpark.data.model.ParkingSlot
+import com.example.inpark.data.model.Reservation
+import com.example.inpark.data.model.ReservationRequest
+import com.example.inpark.data.model.ReservationWithPlaceAndParking
 import okhttp3.OkHttpClient
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Path
 import java.util.concurrent.TimeUnit
 
+interface ReservationApi {
+    @GET(apiConstants.ALLRESERVATIONS)
+    suspend fun getAllReservations(): Response<List<Reservation>>
 
-data class SearchRequest(
-    val query: String
-)
-interface ParkingApi {
-    @GET(apiConstants.GETALLPARKINGS)
-    suspend fun getAllParkings(): Response<List<Parking>>
+    @GET("${apiConstants.RESERVATIONSBYUSER}/{id}")
+    suspend fun getReservationByUser(@Path("id") id: String): Response<List<ReservationWithPlaceAndParking>>
 
-    @GET("${apiConstants.GETALLPARKINGS}/{id}")
-    suspend fun getParkingById(@Path("id") id: String): Response<Parking>
+    @POST(apiConstants.CREATERESERVATION)
+    suspend fun createReservation(@Body reservation: ReservationRequest): Response<Reservation>
 
-    @GET(apiConstants.SEARCHPARKINGS)
-    suspend fun searchParkings(@Body query: SearchRequest): Response<List<Parking>>
-
-    @GET("${apiConstants.PARKINGBYPLACE}/{id}")
-    suspend fun getParkingByPlaceId(@Path("id") id:String):Response<Parking>
-
-    @GET("${apiConstants.SLOTSBYPARKING}/{id}")
-    suspend fun getSlotsByParking(@Path("id") id: String):Response<List<ParkingSlot>>
     companion object {
-        var endpoint: ParkingApi? = null
-        fun createEndpoint(): ParkingApi {
+        var endpoint: ReservationApi? = null
+        fun createEndpoint(): ReservationApi {
             if (endpoint == null) {
                 val client = OkHttpClient.Builder()
                     .connectTimeout(30, TimeUnit.SECONDS)
@@ -44,7 +38,7 @@ interface ParkingApi {
                     .baseUrl(apiConstants.BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
-                    .create(ParkingApi::class.java)
+                    .create(ReservationApi::class.java)
             }
 
             return endpoint!!

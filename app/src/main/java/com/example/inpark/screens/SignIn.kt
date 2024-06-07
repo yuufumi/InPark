@@ -67,6 +67,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role.Companion.Button
 import com.example.inpark.data.api.types.EmailRequest
+import com.example.inpark.data.dao.UserDao
 import com.example.inpark.utils.AuthResult
 import com.example.inpark.viewModels.SignInViewModel
 import com.google.android.gms.common.api.ApiException
@@ -75,7 +76,7 @@ import com.stevdzasan.onetap.rememberOneTapSignInState
 import kotlinx.coroutines.launch
 
 @Composable
-fun SignIn (navController: NavController, authViewModel: AuthViewModel, signInViewModel: SignInViewModel) {
+fun SignIn (navController: NavController, authViewModel: AuthViewModel, signInViewModel: SignInViewModel,userDao: UserDao) {
 
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -104,7 +105,7 @@ fun SignIn (navController: NavController, authViewModel: AuthViewModel, signInVi
                             prenom = emailResponse!!.body()!!.prenom,
                             mot_de_passe = emailResponse!!.body()!!.prenom,
                             num_telephone = emailResponse!!.body()!!.num_telephone,
-                            id = emailResponse!!.body()!!.userId
+                            id = emailResponse!!.body()!!.id
                         )
                     }
                 }
@@ -161,18 +162,21 @@ fun SignIn (navController: NavController, authViewModel: AuthViewModel, signInVi
             AddProgress(authViewModel = authViewModel)
             if (!isLoggedIn) {
                 if(loginResponse != null){
-                    sharedPreferences.edit().putString("id", loginResponse?.body()?.userId.toString())
+                    Log.d("USER ID FROM SERVER",loginResponse?.body()?.id.toString())
+                    sharedPreferences.edit().putString("id", loginResponse?.body()?.id.toString())
                         .apply()
                     sharedPreferences.edit()
                         .putString("username", loginResponse?.body()?.username.toString()).apply()
+                    authViewModel.addUser(loginResponse?.body()!!)
                     navController.navigate("home")
                     isLoggedIn =true
                 }else if(emailResponse != null){
-                    sharedPreferences.edit().putString("id", emailResponse?.body()?.userId.toString())
+                    Log.d("USER ID FROM SERVER",emailResponse?.body()?.id.toString())
+                    sharedPreferences.edit().putString("id", emailResponse?.body()?.id.toString())
                         .apply()
                     sharedPreferences.edit()
                         .putString("username", emailResponse?.body()?.username.toString()).apply()
-
+                    authViewModel.addUser(emailResponse?.body()!!)
                     navController.navigate("home")
                     isLoggedIn =true
                 }

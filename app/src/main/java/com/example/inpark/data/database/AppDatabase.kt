@@ -5,7 +5,6 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.inpark.data.dao.ParkingDao
-import com.example.inpark.data.dao.ReservationDao
 import com.example.inpark.data.dao.UserDao
 import com.example.inpark.data.model.Parking
 import com.example.inpark.data.model.ParkingSlot
@@ -25,7 +24,6 @@ abstract class AppDatabase: RoomDatabase() {
 
     abstract fun getUserDao(): UserDao
     abstract fun getParkingDao(): ParkingDao
-    abstract fun getReservationDao(): ReservationDao
 
     companion object {
         private var INSTANCE: AppDatabase? = null
