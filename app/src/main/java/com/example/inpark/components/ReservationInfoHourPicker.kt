@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.inpark.R
 import com.example.inpark.outfitFamily
+import com.example.inpark.utils.reformatTime
 import java.util.Date
 
 @Composable
@@ -49,7 +50,7 @@ fun ReservationInfoHourPicker(
     val timePickerDialog = TimePickerDialog(
         context,
         {_, hour : Int, minute: Int ->
-            time.value = "$hour:$minute"
+            time.value = reformatTime("$hour:$minute")
         }, hour, minute, false
     )
 

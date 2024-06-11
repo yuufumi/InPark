@@ -118,3 +118,9 @@ fun isMobileDataEnabled(context: Context): Boolean {
     }
 }
 
+fun reformatTime(time: String): String {
+    val parts = time.split(":")
+    val hour = "%02d".format(parts[0].toInt())
+    val minute = "%02d".format(parts[1].toInt())
+    return "$hour:$minute"
+}

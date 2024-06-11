@@ -100,7 +100,7 @@ fun Bookings(navController: NavController,reservationViewModel: ReservationViewM
                             )
                         )
                         Text(
-                            text = "yuufumi",
+                            text = sharedPreferences.getString("username",null).toString(),
                             style = TextStyle(
                                 fontFamily = outfitFamily,
                                 fontWeight = FontWeight.Medium,
