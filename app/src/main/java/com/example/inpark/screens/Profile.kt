@@ -3,6 +3,7 @@ package com.example.inpark.screens
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import android.widget.Space
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -51,6 +52,7 @@ import com.example.inpark.components.InparkBottomNavBar
 import com.example.inpark.components.LogoutButton
 import com.example.inpark.components.ParkingCard
 import com.example.inpark.components.ProfileTopBar
+import com.example.inpark.components.ShimmerListItem
 import com.example.inpark.components.TabBar
 import com.example.inpark.components.Title
 import com.example.inpark.components.TopBar
@@ -68,7 +70,6 @@ import com.example.inpark.viewModels.ParkingViewModel
 @Composable
 fun Profile(sharedPreferences: SharedPreferences, navController: NavController,authViewModel: AuthViewModel,userDao: UserDao,parkingViewModel:ParkingViewModel) {
     val userId = sharedPreferences.getString("id", null)
-    val tabs = listOf("Tab 1", "Tab 2", "Tab 3")
     val (selectedTabIndex, setSelectedTabIndex) = remember { mutableStateOf(0) }
     val allParkingsResponse by parkingViewModel.allParkingsResponse.observeAsState()
     var parkings: List<Parking>? = allParkingsResponse?.body()
@@ -78,6 +79,7 @@ fun Profile(sharedPreferences: SharedPreferences, navController: NavController,a
         parkingViewModel.getAllParkings()
     }
     val user: User? = getByIdResponse.value
+    Log.d("USER",user.toString())
     if (user != null) {
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -142,7 +144,6 @@ fun Profile(sharedPreferences: SharedPreferences, navController: NavController,a
                         )
                     )
                     TabBar(
-                        tabs = tabs,
                         selectedTabIndex = selectedTabIndex,
                         onTabSelected = setSelectedTabIndex
                     )
@@ -150,7 +151,17 @@ fun Profile(sharedPreferences: SharedPreferences, navController: NavController,a
                     when (selectedTabIndex) {
                         0 ->
                             if(parkings == null){
-                                CircularProgressIndicator()
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = 20.dp, bottom = 60.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.spacedBy(20.dp)
+                                ) {
+                                    for(i in 1..5) {
+                                        ShimmerListItem()
+                                    }
+                                }
                             }else {
                                 Column(
                                     modifier = Modifier

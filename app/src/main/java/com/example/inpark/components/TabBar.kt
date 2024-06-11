@@ -26,7 +26,6 @@ import com.example.inpark.outfitFamily
 
 @Composable
 fun TabBar(
-    tabs: List<String>,
     selectedTabIndex: Int,
     onTabSelected: (Int) ->Unit
 ){

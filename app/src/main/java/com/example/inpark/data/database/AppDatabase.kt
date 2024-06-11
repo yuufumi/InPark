@@ -5,9 +5,10 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.inpark.data.dao.ParkingDao
+import com.example.inpark.data.dao.ReservationDao
 import com.example.inpark.data.dao.UserDao
 import com.example.inpark.data.model.Parking
-import com.example.inpark.data.model.ParkingSlot
+import com.example.inpark.data.model.Place
 import com.example.inpark.data.model.Reservation
 import com.example.inpark.data.model.User
 
@@ -15,15 +16,17 @@ import com.example.inpark.data.model.User
     entities = [
         User::class,
         Parking::class,
-        ParkingSlot::class,
+        Place::class,
         Reservation::class
     ]
-    ,version = 2
+    ,version = 4
 )
 abstract class AppDatabase: RoomDatabase() {
 
     abstract fun getUserDao(): UserDao
     abstract fun getParkingDao(): ParkingDao
+
+    abstract fun getReseervationDao(): ReservationDao
 
     companion object {
         private var INSTANCE: AppDatabase? = null

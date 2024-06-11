@@ -1,5 +1,6 @@
 package com.example.inpark.screens
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -13,6 +14,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -33,13 +35,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.inpark.components.DetailsStickyBottomBar
 import com.example.inpark.components.MainParkingDetails
 import com.example.inpark.components.ParkingTopBar
+import com.example.inpark.components.StickyBottomBar
 import com.example.inpark.data.model.Parking
+import com.example.inpark.data.model.ReservationRequest
 import com.example.inpark.outfitFamily
+import com.example.inpark.utils.convertToISODateTime
 import com.example.inpark.viewModels.ParkingViewModel
 import kotlinx.coroutines.launch
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun parkingDetails(parkingViewModel: ParkingViewModel,parkingId: String,navController: NavController) {
@@ -54,6 +61,7 @@ fun parkingDetails(parkingViewModel: ParkingViewModel,parkingId: String,navContr
     val scope = rememberCoroutineScope()
     var showBottomSheet by remember { mutableStateOf(false) }
     if(parking != null) {
+
         Column(
             horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
                 .fillMaxSize()
@@ -86,27 +94,11 @@ fun parkingDetails(parkingViewModel: ParkingViewModel,parkingId: String,navContr
                 )
             }
             Spacer(modifier = Modifier.height(20.dp))
-            /*
-        ModalBottomSheet(
-            onDismissRequest = {},
-            sheetState = sheetState
-        ) {
-            // Sheet content
-            Button(onClick = {
-                scope.launch{ sheetState.hide() }.invokeOnCompletion {
-                    if (!sheetState.isVisible) {
-                        showBottomSheet = false
-                    }
-                }
-            }) {
-                Text("Hide bottom sheet")
-            }
-        }*/
 
 
         }
+        }
     }
-}
 
 fun <Parking> getParkingById(parkings: List<Parking>, id:Int): Parking? where Parking: Any{
     return parkings.firstOrNull{ it::class.java.getDeclaredField("id").getInt(it) == id }

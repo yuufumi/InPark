@@ -1,7 +1,7 @@
 package com.example.inpark.data.api
 
 import com.example.inpark.data.model.Parking
-import com.example.inpark.data.model.ParkingSlot
+import com.example.inpark.data.model.Place
 import okhttp3.OkHttpClient
 import retrofit2.Response
 import retrofit2.Retrofit
@@ -28,8 +28,8 @@ interface ParkingApi {
     @GET("${apiConstants.PARKINGBYPLACE}/{id}")
     suspend fun getParkingByPlaceId(@Path("id") id:String):Response<Parking>
 
-    @GET("${apiConstants.SLOTSBYPARKING}/{id}")
-    suspend fun getSlotsByParking(@Path("id") id: String):Response<List<ParkingSlot>>
+    @GET("${apiConstants.SLOTSBYPARKING}/available/{id}")
+    suspend fun getSlotsByParking(@Path("id") id: String):Response<List<Place>>
     companion object {
         var endpoint: ParkingApi? = null
         fun createEndpoint(): ParkingApi {

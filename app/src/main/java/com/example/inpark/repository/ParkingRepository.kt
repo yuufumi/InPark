@@ -2,10 +2,8 @@ package com.example.inpark.repository
 
 import com.example.inpark.data.api.ParkingApi
 import com.example.inpark.data.api.SearchRequest
-import com.example.inpark.data.api.types.AuthRequest
 import com.example.inpark.data.model.Parking
-import com.example.inpark.data.model.ParkingSlot
-import com.example.inpark.data.model.User
+import com.example.inpark.data.model.Place
 import retrofit2.Response
 
 class ParkingRepository(private val parkingApi: ParkingApi) {
@@ -21,7 +19,7 @@ class ParkingRepository(private val parkingApi: ParkingApi) {
         return parkingApi.searchParkings(query)
     }
 
-    suspend fun getSlotsByParking(id: String): Response<List<ParkingSlot>>{
+    suspend fun getSlotsByParking(id: String): Response<List<Place>>{
         return parkingApi.getSlotsByParking(id)
     }
 

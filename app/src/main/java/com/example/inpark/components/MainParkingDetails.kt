@@ -37,6 +37,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberAsyncImagePainter
 import com.example.inpark.R
 import com.example.inpark.data.model.Parking
 import com.example.inpark.outfitFamily
@@ -55,13 +56,14 @@ fun MainParkingDetails(parking:Parking){
             // Optional background color (useful for visibility)
         ) {
             // Add your content here (e.g., Text, Column, etc.)
+
             Image(
                 modifier = Modifier
                     .fillMaxSize()
                     .aspectRatio(1f),
                 contentScale = ContentScale.Crop,
                 // Fills the container (adjust as// Resize behavior
-                painter = painterResource(id = R.drawable.parking_example), // Replace with your image resource
+                painter = rememberAsyncImagePainter(parking.photo), // Replace with your image resource
                 contentDescription = "parking Image" // Optional content description for accessibility
             )
         }

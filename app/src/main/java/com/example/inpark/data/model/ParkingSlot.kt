@@ -15,7 +15,7 @@ import com.google.gson.annotations.SerializedName
             onDelete = ForeignKey.CASCADE
         )
     ])
-data class ParkingSlot(
+data class Place(
     @PrimaryKey(autoGenerate = false)
     var id:Int,
     var parkingId:Int,

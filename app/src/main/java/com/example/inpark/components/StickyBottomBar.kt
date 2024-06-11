@@ -1,5 +1,6 @@
 package com.example.inpark.components
 
+import android.telecom.Call.Details
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -55,6 +56,50 @@ fun StickyBottomBar(
             ) {
                 Text(
                     text = "Confirm Booking",
+                    style = TextStyle(
+                        color = Color(0xff002020),
+                        fontSize = 14.sp,
+                        fontFamily = outfitFamily,
+                        fontWeight = FontWeight.Bold)
+
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun DetailsStickyBottomBar(
+    price: Int,
+    onButtonClick: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color = Color(0xff002020))
+            .padding(horizontal = 30.dp, vertical = 10.dp)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "${price} DA/Hr",
+                style = TextStyle(
+                    color = Color(0xffA0F000),
+                    fontSize = 18.sp,
+                    fontFamily = outfitFamily,
+                    fontWeight = FontWeight.Bold)
+            )
+            Button(
+                onClick = onButtonClick,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xffA0F000)
+                )
+            ) {
+                Text(
+                    text = "Reserve Now",
                     style = TextStyle(
                         color = Color(0xff002020),
                         fontSize = 14.sp,

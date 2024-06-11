@@ -51,9 +51,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import com.example.inpark.R
 import com.example.inpark.data.model.Parking
 import com.example.inpark.data.model.Reservation
+import com.example.inpark.data.model.ReservationResponse
 import com.example.inpark.outfitFamily
 import com.example.inpark.utils.convertToDate
 import com.example.inpark.viewModels.ParkingViewModel
@@ -63,17 +65,9 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun longBookingCard(reservation: Reservation,parkingViewModel:ParkingViewModel,navController: NavController) {
+fun longBookingCard(reservation: ReservationResponse,parkingViewModel:ParkingViewModel,navController: NavController) {
     val sheetState = rememberModalBottomSheetState()
-    val scope = rememberCoroutineScope()
-    val parkingByPlaceResponse by parkingViewModel.parkingByPlaceResponse.observeAsState()
-    LaunchedEffect(Unit) {
-        parkingViewModel.getParkingByPlaceId(reservation.placeId.toString())
-        Log.d("PLACE",reservation.placeId.toString())
-    }
-    var parking: Parking? = parkingByPlaceResponse?.body()
     var showBottomSheet by remember { mutableStateOf(false) }
-    if (parking != null) {
         Card(
             colors = CardDefaults.cardColors(
                 containerColor = Color(0xffF5FFFA)
@@ -91,7 +85,7 @@ fun longBookingCard(reservation: Reservation,parkingViewModel:ParkingViewModel,n
             ) {
                 Column {
                     Text(
-                        text = parking.nom,
+                        text = reservation.nom,
                         modifier = Modifier.padding(start = 3.dp),
                         style = TextStyle(
                             fontFamily = outfitFamily,
@@ -101,7 +95,7 @@ fun longBookingCard(reservation: Reservation,parkingViewModel:ParkingViewModel,n
                         )
                     )
                     Text(
-                        text = parking.location,
+                        text = reservation.location,
                         modifier = Modifier.padding(start = 3.dp),
                         style = TextStyle(
                             fontFamily = outfitFamily,
@@ -111,7 +105,7 @@ fun longBookingCard(reservation: Reservation,parkingViewModel:ParkingViewModel,n
                         )
                     )
                     Text(
-                        text = "${parking.price_per_hour}Da/hr",
+                        text = "${reservation.price_per_hour}Da/hr",
                         modifier = Modifier.padding(start = 3.dp),
                         style = TextStyle(
                             fontFamily = outfitFamily,
@@ -132,7 +126,7 @@ fun longBookingCard(reservation: Reservation,parkingViewModel:ParkingViewModel,n
                             )
                         )
                         Text(
-                            text = "${convertToDate(reservation.date_entree)} ${reservation.heure_entree}",
+                            text = "${convertToDate(reservation.date_entree)} ${reservation.heure_entree}0",
                             modifier = Modifier.padding(start = 3.dp),
                             style = TextStyle(
                                 fontFamily = outfitFamily,
@@ -154,7 +148,7 @@ fun longBookingCard(reservation: Reservation,parkingViewModel:ParkingViewModel,n
                             )
                         )
                         Text(
-                            text = "${convertToDate(reservation.date_sortie)} ${reservation.heure_sortie}",
+                            text = "${convertToDate(reservation.date_sortie)} ${reservation.heure_sortie}0",
                             modifier = Modifier.padding(start = 3.dp),
                             style = TextStyle(
                                 fontFamily = outfitFamily,
@@ -165,6 +159,7 @@ fun longBookingCard(reservation: Reservation,parkingViewModel:ParkingViewModel,n
                         )
                     }
                 }
+
                 Box(
                     modifier = Modifier
                         .size(width = 100.dp, height = 100.dp) // Fills the entire screen
@@ -173,13 +168,14 @@ fun longBookingCard(reservation: Reservation,parkingViewModel:ParkingViewModel,n
                     // Optional background color (useful for visibility)
                 ) {
                     // Add your content here (e.g., Text, Column, etc.)
+
                     Image(
                         modifier = Modifier
                             .fillMaxSize()
                             .aspectRatio(1f),
                         contentScale = ContentScale.Crop,
                         // Fills the container (adjust as// Resize behavior
-                        painter = painterResource(id = R.drawable.parking_example), // Replace with your image resource
+                        painter = rememberAsyncImagePainter(reservation.photo), // Replace with your image resource
                         contentDescription = "parking Image" // Optional content description for accessibility
                     )
                 }
@@ -217,7 +213,7 @@ fun longBookingCard(reservation: Reservation,parkingViewModel:ParkingViewModel,n
                                     .aspectRatio(1f),
                                 contentScale = ContentScale.Crop,
                                 // Fills the container (adjust as// Resize behavior
-                                painter = painterResource(id = R.drawable.parking_example), // Replace with your image resource
+                                painter = rememberAsyncImagePainter(reservation.photo), // Replace with your image resource
                                 contentDescription = "parking Image" // Optional content description for accessibility
                             )
                         }
@@ -231,7 +227,7 @@ fun longBookingCard(reservation: Reservation,parkingViewModel:ParkingViewModel,n
                             )
                             {
                                 Text(
-                                    text = parking.nom,
+                                    text = reservation.nom,
                                     modifier = Modifier.padding(start = 3.dp),
                                     style = TextStyle(
                                         fontFamily = outfitFamily,
@@ -240,14 +236,14 @@ fun longBookingCard(reservation: Reservation,parkingViewModel:ParkingViewModel,n
                                         color = Color(0xff000000)
                                     )
                                 )
-                                Spacer(modifier = Modifier.width(35.dp))
+                                Spacer(modifier = Modifier.width(10.dp))
                                 Text(
-                                    text = "${parking.price_per_hour}Da/hr",
+                                    text = "${reservation.price_per_hour}Da/hr",
                                     modifier = Modifier.padding(start = 3.dp),
                                     style = TextStyle(
                                         fontFamily = outfitFamily,
                                         fontWeight = FontWeight.Medium,
-                                        fontSize = 16.sp,
+                                        fontSize = 14.sp,
                                         color = Color(0xff000000)
                                     )
                                 )
@@ -255,7 +251,7 @@ fun longBookingCard(reservation: Reservation,parkingViewModel:ParkingViewModel,n
                             Spacer(modifier = Modifier.height(15.dp))
                             Row(verticalAlignment = Alignment.CenterVertically)
                             {
-                                Rate(parking.rating.toDouble())
+                                Rate(reservation.rating.toDouble())
                                 Spacer(modifier = Modifier.width(10.dp))
                                 Divider(
                                     modifier = Modifier
@@ -264,7 +260,7 @@ fun longBookingCard(reservation: Reservation,parkingViewModel:ParkingViewModel,n
                                 )
                                 Spacer(modifier = Modifier.width(10.dp))
                                 Text(
-                                    text = parking.location,
+                                    text = reservation.location,
                                     modifier = Modifier.padding(start = 3.dp),
                                     style = TextStyle(
                                         fontFamily = outfitFamily,
@@ -286,7 +282,7 @@ fun longBookingCard(reservation: Reservation,parkingViewModel:ParkingViewModel,n
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text = "${convertToDate(reservation.date_entree)} ${reservation.heure_entree}",
+                            text = "${convertToDate(reservation.date_entree)} ${reservation.heure_entree}0",
                             style = TextStyle(
                                 fontFamily = outfitFamily,
                                 fontWeight = FontWeight.SemiBold,
@@ -300,7 +296,7 @@ fun longBookingCard(reservation: Reservation,parkingViewModel:ParkingViewModel,n
                                 .height(2.dp), color = Color(0xff002020)
                         )
                         Text(
-                            text = "${convertToDate(reservation.date_sortie)} ${reservation.heure_sortie}",
+                            text = "${convertToDate(reservation.date_sortie)} ${reservation.heure_sortie}0",
                             style = TextStyle(
                                 fontFamily = outfitFamily,
                                 fontWeight = FontWeight.SemiBold,
@@ -311,7 +307,7 @@ fun longBookingCard(reservation: Reservation,parkingViewModel:ParkingViewModel,n
                     }
                     Spacer(modifier = Modifier.height(15.dp))
                     QrCodeView(
-                        data = "localhost:8000/${parking.id}",
+                        data = reservation.toString(),
                         modifier = Modifier.size(130.dp),
                         colors = QrCodeColors(
                             background = Color(0xffffffff),
@@ -322,7 +318,7 @@ fun longBookingCard(reservation: Reservation,parkingViewModel:ParkingViewModel,n
                     Button(
                         modifier = Modifier.fillMaxWidth(0.6f),
                         shape = RoundedCornerShape(10.dp),
-                        onClick = { navController.navigate("parkings/${parking.id}") },
+                        onClick = { navController.navigate("parkings/${reservation.parkingId}") },
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xff003C3C))
                     ) {
                         Text(
@@ -340,7 +336,6 @@ fun longBookingCard(reservation: Reservation,parkingViewModel:ParkingViewModel,n
             }
         }
 
-    }
 }
 
 @Composable

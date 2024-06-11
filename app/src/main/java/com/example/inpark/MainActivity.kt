@@ -4,7 +4,9 @@ package com.example.inpark
 
 import android.content.pm.PackageManager
 import android.Manifest
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,6 +27,7 @@ import com.example.inpark.app.InParkApp
 import com.example.inpark.data.database.AppDatabase
 import com.example.inpark.utils.AppPermissions
 import com.example.inpark.viewModels.LocationViewModel
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -39,21 +42,40 @@ val outfitFamily = FontFamily(
 
 class MainActivity : ComponentActivity() {
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
+        // In your MainActivity or a suitable place in your app
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w("FCM", "Fetching FCM registration token failed", task.exception)
+                return@addOnCompleteListener
+            }
+
+            // Get new FCM registration token
+            val token = task.result
+            Log.d("FCM", "FCM Token: $token")
+            //FCsendTokenToServer(token)
+        }
+
+
         val viewModel = ViewModelProvider(this)[LocationViewModel::class.java]
         viewModel.getLastLocation()
         installSplashScreen()
         requestLocationPermission()
+        requestNotificationPermission()
                 val db = AppDatabase.getDBInstance(applicationContext)
                 val userDao = db.getUserDao()
                 val parkingDao = db.getParkingDao()
+                val reservationDao = db.getReseervationDao()
                 setContent {
                     Surface(
                         modifier = Modifier.fillMaxSize(),
                         color = Color(0xff002020),
                     ) {
-                        InParkApp(viewModel,userDao)
+                        InParkApp(viewModel,userDao, reservationDao)
                     }
 
         }
@@ -72,6 +94,22 @@ class MainActivity : ComponentActivity() {
                 1
             )
         } else {
+        }
+    }
+    private fun requestNotificationPermission() {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val hasPermission = ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+
+            if(!hasPermission) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                    0
+                )
+            }
         }
     }
 }

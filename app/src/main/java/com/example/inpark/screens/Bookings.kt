@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -40,7 +41,7 @@ import com.example.inpark.components.SearchBar
 import com.example.inpark.components.TopBar
 import com.example.inpark.components.longBookingCard
 import com.example.inpark.data.model.Reservation
-import com.example.inpark.data.model.ReservationWithPlaceAndParking
+import com.example.inpark.data.model.ReservationResponse
 import com.example.inpark.outfitFamily
 import com.example.inpark.viewModels.LocationViewModel
 import com.example.inpark.viewModels.ParkingViewModel
@@ -49,16 +50,29 @@ import com.example.inpark.viewModels.ReservationViewModel
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun Bookings(navController: NavController,reservationViewModel: ReservationViewModel,locationViewModel: LocationViewModel,parkingViewModel: ParkingViewModel) {
-    val ReservationsUserResponse by reservationViewModel.getReservationByUserResponse.observeAsState()
+    val connectivity by reservationViewModel.isOnline.observeAsState()
+
+    var ReservationsUserResponse: List<ReservationResponse>? = null // Initialize with null
+
+    if (connectivity == true) {
+        ReservationsUserResponse = reservationViewModel.getReservationByUserResponse.observeAsState().value?.body()
+    } else {
+        ReservationsUserResponse = reservationViewModel.getReservationByUserFromCacheResponse.observeAsState().value
+    }
     val context = LocalContext.current
     val sharedPreferences = context.getSharedPreferences("my_prefs", Context.MODE_PRIVATE)
     val userId = sharedPreferences.getString("id",null)
     LaunchedEffect(Unit) {
         if (userId != null) {
-            reservationViewModel.getReservationByUser(userId)
+            Log.d("CONN",connectivity.toString())
+            if (connectivity == true) {
+                reservationViewModel.getReservationByUser(userId)
+            } else {
+                reservationViewModel.getReservationByUserFromCache(userId)
+            }
         }
     }
-    var reservations: List<ReservationWithPlaceAndParking>? = ReservationsUserResponse?.body()
+    var reservations: List<ReservationResponse>? = ReservationsUserResponse
     if(reservations != null) {
         Log.d("ALL RESERVATIONS",reservations.toString())
         Surface(
@@ -113,17 +127,21 @@ fun Bookings(navController: NavController,reservationViewModel: ReservationViewM
                             )
                             .fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        /*
                             reservations?.forEach { reservation ->
                             longBookingCard(reservation = reservation, navController = navController, parkingViewModel = parkingViewModel)
-                        }*/
+                        }
                     }
 
                 }
             }
         }
     }else {
-        CircularProgressIndicator()
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator(color = Color(0xffA0F000))
+        }
     }
 
 }

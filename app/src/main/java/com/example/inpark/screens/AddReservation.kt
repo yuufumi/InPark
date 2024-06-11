@@ -48,7 +48,7 @@ import com.example.inpark.components.ReservationInfoPlacePicker
 import com.example.inpark.components.Title
 import com.example.inpark.components.UserInfoTextField
 import com.example.inpark.data.model.Parking
-import com.example.inpark.data.model.ParkingSlot
+import com.example.inpark.data.model.Place
 import com.example.inpark.data.model.Reservation
 import com.example.inpark.data.model.ReservationRequest
 import com.example.inpark.data.model.User
@@ -61,6 +61,8 @@ import java.time.LocalDate
 @Composable
 fun AddReservation(parkingViewModel: ParkingViewModel,reservationViewModel: ReservationViewModel, parkingId: String, navController: NavController) {
     val slotsByParkingResponse by parkingViewModel.placesPerParkingResponse.observeAsState()
+    val parkingById by parkingViewModel.parkingByIdResponse.observeAsState()
+    val createResevationResponse by reservationViewModel.createReservationResponse.observeAsState()
     val loading by parkingViewModel.loadingSlots
 
     val context = LocalContext.current
@@ -82,6 +84,7 @@ fun AddReservation(parkingViewModel: ParkingViewModel,reservationViewModel: Rese
     }
     LaunchedEffect(Unit) {
         parkingViewModel.getSlotsByParking(parkingId)
+        parkingViewModel.getParkingById(parkingId)
 
     }
     Log.d("loading state",loading.toString())
@@ -91,13 +94,13 @@ fun AddReservation(parkingViewModel: ParkingViewModel,reservationViewModel: Rese
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            CircularProgressIndicator()
+            CircularProgressIndicator(color = Color(0xffA0F000))
         }
     }else {
 
-        var slots: List<ParkingSlot>? = slotsByParkingResponse?.body()
+        var slots: List<Place>? = slotsByParkingResponse?.body()
         Log.d("slots",slots.toString())
-        val parkingSlot = ParkingSlot(0,1,"A",false,2)
+        val parkingSlot = Place(0,1,"A",false,2)
         val selectedItem = remember { mutableStateOf(parkingSlot) }
         Scaffold(
             bottomBar = {StickyBottomBar(10) {
@@ -113,15 +116,31 @@ fun AddReservation(parkingViewModel: ParkingViewModel,reservationViewModel: Rese
                         date_entree = convertToISODateTime(entryDateState.value),
                         date_sortie = convertToISODateTime(exitDateState.value),
                         heure_entree = entryHourState.value,
-                        heure_sortie = exitHourState.value
+                        heure_sortie    = exitHourState.value
                     )
+
                     reservationViewModel.createReservation(reservation)
-                    showToast("Reservation created successfully")
+                    showToast(selectedItem.toString())
                 }
             }
             } ,
             containerColor = Color(0xff002020)
         ) {
+            if(createResevationResponse != null) {
+                val parking: Parking = parkingById?.body()!!
+                val parkingSlot: Place = selectedItem.value
+                val reservation = Reservation(
+                    id = createResevationResponse?.body()!!.id,
+                    placeId = selectedItem.value.id,
+                    userId = sharedPreferences.getString("id",null)!!.toInt(),
+                    date_entree = createResevationResponse?.body()!!.date_entree,
+                    date_sortie = createResevationResponse?.body()!!.date_sortie,
+                    heure_entree = createResevationResponse?.body()!!.heure_entree,
+                    heure_sortie = createResevationResponse?.body()!!.heure_sortie
+                )
+                Log.d("CURR RESERVATION",reservation.toString())
+                reservationViewModel.cacheReservation(reservation,parking,parkingSlot)
+            }
             Column(
                 modifier = Modifier
                     .fillMaxWidth()

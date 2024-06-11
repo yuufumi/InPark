@@ -44,35 +44,22 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.app.ActivityCompat.startActivityForResult
-import androidx.credentials.CustomCredential
 import androidx.navigation.NavController
 import com.example.inpark.components.AddProgress
 import com.example.inpark.components.CustomButton
 import com.example.inpark.components.GoogleButton
 import com.example.inpark.components.Title
-import androidx.compose.material3.Button
 import com.example.inpark.components.UserInfoTextField
 import com.example.inpark.data.api.types.AuthRequest
 import com.example.inpark.data.model.User
 import com.example.inpark.outfitFamily
 import com.example.inpark.viewModels.AuthViewModel
-import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.material.Scaffold
-import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.semantics.Role.Companion.Button
-import com.example.inpark.data.api.types.EmailRequest
 import com.example.inpark.data.dao.UserDao
 import com.example.inpark.utils.AuthResult
 import com.example.inpark.viewModels.SignInViewModel
 import com.google.android.gms.common.api.ApiException
-import com.stevdzasan.onetap.OneTapSignInWithGoogle
-import com.stevdzasan.onetap.rememberOneTapSignInState
 import kotlinx.coroutines.launch
 
 @Composable
@@ -82,9 +69,7 @@ fun SignIn (navController: NavController, authViewModel: AuthViewModel, signInVi
     val context = LocalContext.current
     val sharedPreferences = context.getSharedPreferences("my_prefs", Context.MODE_PRIVATE)
     var text by remember { mutableStateOf<String?>(null) }
-    val user by remember(signInViewModel) { signInViewModel.user }.collectAsState()
     val signInRequestCode = 1
-    val state = rememberOneTapSignInState()
 
     val emailResponse by authViewModel.getByEmailResponse.observeAsState()
     val authResultLauncher = rememberLauncherForActivityResult(contract = AuthResult()) { task ->
@@ -105,7 +90,7 @@ fun SignIn (navController: NavController, authViewModel: AuthViewModel, signInVi
                             prenom = emailResponse!!.body()!!.prenom,
                             mot_de_passe = emailResponse!!.body()!!.prenom,
                             num_telephone = emailResponse!!.body()!!.num_telephone,
-                            id = emailResponse!!.body()!!.id
+                            id = emailResponse!!.body()!!.id!!
                         )
                     }
                 }
@@ -240,55 +225,6 @@ fun SignIn (navController: NavController, authViewModel: AuthViewModel, signInVi
         }
     }
 }
-
-//@Composable
-//fun AuthView(
-//    errorText: String?,
-//    onClick: () -> Unit
-//) {
-//    var isLoading by remember { mutableStateOf(false) }
-//
-//    Scaffold(
-//        topBar = {
-//            TopAppBar(
-//                title = {
-//                    androidx.compose.material.Text(
-//                        text = "Google Sign In",
-//                        modifier = Modifier.fillMaxWidth(),
-//                        textAlign = TextAlign.Center
-//                    )
-//                }
-//            )
-//        }
-//    ) {innerPadding ->
-//        Column(
-//            modifier = Modifier.fillMaxSize().padding(innerPadding),
-//            verticalArrangement = Arrangement.Center,
-//            horizontalAlignment = Alignment.CenterHorizontally
-//        ) {
-//            GoogleSignInButton(
-//                text = "Sign In with Google",
-//                icon = painterResource(id = R.drawable.google_sign_in_btn),
-//                loadingText = "Signing In...",
-//                isLoading = isLoading,
-//                onClick = {
-//                    isLoading = true
-//                    onClick()
-//                }
-//            )
-//
-//            errorText?.let {
-//                isLoading = false
-//
-//                Spacer(modifier = Modifier.height(30.dp))
-//
-//                androidx.compose.material.Text(
-//                    text = it
-//                )
-//            }
-//        }
-//    }
-//}
 
 @Composable
 fun getGoogleSignInOptions(): GoogleSignInOptions {

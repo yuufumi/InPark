@@ -10,7 +10,7 @@ import com.example.inpark.data.api.SearchRequest
 import com.example.inpark.data.api.types.AuthRequest
 import com.example.inpark.data.model.User
 import com.example.inpark.data.model.Parking
-import com.example.inpark.data.model.ParkingSlot
+import com.example.inpark.data.model.Place
 import com.example.inpark.repository.AuthRepository
 import com.example.inpark.repository.ParkingRepository
 import kotlinx.coroutines.CoroutineScope
@@ -23,12 +23,12 @@ class ParkingViewModel(private val parkingRepository: ParkingRepository): ViewMo
 
     private val _allParkingsResponse = MutableLiveData<Response<List<Parking>>>()
 
-    private val _placesPerParkingResponse = MutableLiveData<Response<List<ParkingSlot>>>()
+    private val _placesPerParkingResponse = MutableLiveData<Response<List<Place>>>()
 
     private val _parkingByPlaceResponse = MutableLiveData<Response<Parking>?>()
     val allParkingsResponse : LiveData<Response<List<Parking>>> get() = _allParkingsResponse
 
-    val placesPerParkingResponse : LiveData<Response<List<ParkingSlot>>> get() = _placesPerParkingResponse
+    val placesPerParkingResponse : LiveData<Response<List<Place>>> get() = _placesPerParkingResponse
 
     val parkingByPlaceResponse : MutableLiveData<Response<Parking>?> get() = _parkingByPlaceResponse
 

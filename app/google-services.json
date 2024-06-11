@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "498816631004",
-    "project_id": "inpark-83350",
-    "storage_bucket": "inpark-83350.appspot.com"
+    "project_number": "112484766529",
+    "project_id": "inparknotifications",
+    "storage_bucket": "inparknotifications.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:498816631004:android:9bc6c7ffb3caa4c64a3419",
+        "mobilesdk_app_id": "1:112484766529:android:2dfb599ca3fc46e66687c0",
         "android_client_info": {
           "package_name": "com.example.inpark"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDlbe4JGpUlYxQsFrfkEz2wWLHduRq3UmI"
+          "current_key": "AIzaSyClfldG36sEHxWt-UeqEwp5oSByvJMkDNo"
         }
       ],
       "services": {

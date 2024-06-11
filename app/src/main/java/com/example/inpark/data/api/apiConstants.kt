@@ -2,7 +2,7 @@ package com.example.inpark.data.api
 
 object apiConstants {
     // Backend Base URL
-    const val BASE_URL = "https://90a5-154-121-31-23.ngrok-free.app"
+    const val BASE_URL = "https://707e-41-111-189-173.ngrok-free.app"
     // auth Endpoints
     const val REGISTER = "api/users/register"
     const val LOGIN = "api/users/login"

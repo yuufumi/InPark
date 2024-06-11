@@ -1,5 +1,6 @@
 package com.example.inpark.components
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -30,6 +31,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberAsyncImagePainter
 import com.example.inpark.R
 import com.example.inpark.data.model.Parking
 import com.example.inpark.outfitFamily
@@ -62,7 +64,7 @@ Card (
                     .aspectRatio(1f),
                 contentScale = ContentScale.Crop,
                 // Fills the container (adjust as// Resize behavior
-                painter = painterResource(id = R.drawable.parking_example), // Replace with your image resource
+                painter = rememberAsyncImagePainter(parking.photo), // Replace with your image resource
                 contentDescription = "parking Image" // Optional content description for accessibility
             )
             if(true){

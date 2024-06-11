@@ -45,11 +45,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import com.example.inpark.R
-import com.example.inpark.data.model.ParkingSlot
+import com.example.inpark.data.model.Place
 import com.example.inpark.outfitFamily
 
 @Composable
-fun ReservationInfoPlacePicker(items: List<ParkingSlot>,selectedItem: ParkingSlot, onItemSelected: (ParkingSlot) -> Unit,) {
+fun ReservationInfoPlacePicker(items: List<Place>,selectedItem: Place, onItemSelected: (Place) -> Unit,) {
     var expanded by remember { mutableStateOf(false) }
     val icon = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown
 

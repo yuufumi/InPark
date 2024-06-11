@@ -1,30 +1,20 @@
 package com.example.inpark.data.api
 
-import com.example.inpark.data.model.Parking
-import com.example.inpark.data.model.Reservation
-import com.example.inpark.data.model.ReservationRequest
-import com.example.inpark.data.model.ReservationResponse
+import com.example.inpark.data.dto.SendMessageDto
 import okhttp3.OkHttpClient
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
-import retrofit2.http.GET
 import retrofit2.http.POST
-import retrofit2.http.Path
 import java.util.concurrent.TimeUnit
 
-interface ReservationApi {
-    @GET(apiConstants.ALLRESERVATIONS)
-    suspend fun getAllReservations(): Response<List<Reservation>>
+interface FcmApi {
 
-    @GET("${apiConstants.RESERVATIONSBYUSER}/{id}")
-    suspend fun getReservationByUser(@Path("id") id: String): Response<List<ReservationResponse>>
+    @POST("/send")
+    suspend fun sendMessage(@Body body: SendMessageDto)
 
-
-
-    @POST(apiConstants.CREATERESERVATION)
-    suspend fun createReservation(@Body reservation: ReservationRequest): Response<Reservation>
+    @POST("/broadcast")
+    suspend fun broadcast(@Body body: SendMessageDto)
 
     companion object {
         var endpoint: ReservationApi? = null
@@ -45,5 +35,6 @@ interface ReservationApi {
 
             return endpoint!!
         }
+
     }
 }

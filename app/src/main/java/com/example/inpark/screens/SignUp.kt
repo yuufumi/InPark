@@ -91,7 +91,7 @@ fun Signup(navController: NavController, authViewModel: AuthViewModel){
                 username = usernameState.value,
                 email = emailState.value,
                 mot_de_passe = passwordState.value,
-                num_telephone = phoneState.value
+                num_telephone = phoneState.value,
             )
 
             authViewModel.signupUser(user)
